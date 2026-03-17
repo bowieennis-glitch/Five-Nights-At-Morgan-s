@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Five Nights at Morgan's</title>
+  <link rel="stylesheet" href="five-nights-at-morgans.css">
+</head>
+<body>
+
+<!-- ======== TITLE ======== -->
+<div id="title-screen" class="screen active">
+  <div class="title-eyebg"></div>
+  <div class="noise"></div>
+  <div class="title-flicker" style="display:flex;flex-direction:column;align-items:center">
+
+    <div class="title-svg-wrap">
+      <div class="flashlight-cone"></div>
+      <!-- Kid with flashlight -->
+      <img class="title-character" src="school hired this guy btw.jpg" alt="Title character" />
+    </div>
+
+    <div class="title-main">Five Nights<br>at Morgan's</div>
+    <div class="title-tagline">you weren't supposed to be here.</div>
+    <div class="title-lore">
+      You fell asleep on the bus.<br>
+      Now you're locked inside Morgan's office building — alone.<br>
+      Something is walking the halls. It knows you're here.
+    </div>
+    <div class="title-night" id="night-indicator">— Night 1 —</div>
+    <button class="title-btn" onclick="startGame()">STAY TILL MORNING</button>
+  </div>
+  <div class="title-warning">⚠ YOU ARE NOT SUPPOSED TO BE HERE ⚠</div>
+</div>
+
+<!-- ======== GAME ======== -->
+<div id="game-screen" class="screen">
+  <div class="topbar">
+    <div class="clock" id="clock-display">12:00 AM</div>
+    <div class="night-label" id="topbar-night">NIGHT 1</div>
+    <div class="power-wrap">
+      <div class="power-label">FLASHLIGHT</div>
+      <div class="power-bar-outer"><div class="power-bar-inner" id="power-bar" style="width:100%"></div></div>
+      <div class="power-pct" id="power-pct">100%</div>
+    </div>
+  </div>
+
+  <div class="game-main">
+    <div class="office-view" id="office-view">
+      <svg class="office-svg" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="roomlight" cx="50%" cy="35%" r="55%">
+            <stop offset="0%" stop-color="#100d08" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="1"/>
+          </radialGradient>
+        </defs>
+        <rect width="800" height="520" fill="#080706"/>
+        <rect width="800" height="520" fill="url(#roomlight)"/>
+        <line x1="200" y1="0" x2="200" y2="290" stroke="#0f0e0d" stroke-width="1"/>
+        <line x1="400" y1="0" x2="400" y2="290" stroke="#0f0e0d" stroke-width="1"/>
+        <line x1="600" y1="0" x2="600" y2="290" stroke="#0f0e0d" stroke-width="1"/>
+        <line x1="0" y1="100" x2="800" y2="100" stroke="#0f0e0d" stroke-width="1"/>
+        <line x1="0" y1="200" x2="800" y2="200" stroke="#0f0e0d" stroke-width="1"/>
+        <line x1="0" y1="295" x2="800" y2="295" stroke="#181614" stroke-width="2"/>
+        <rect x="0" y="295" width="800" height="225" fill="#060504"/>
+        <line x1="0" y1="370" x2="800" y2="370" stroke="#0c0b0a" stroke-width="1"/>
+        <line x1="0" y1="445" x2="800" y2="445" stroke="#0c0b0a" stroke-width="1"/>
+        <!-- Desk -->
+        <rect x="200" y="358" width="400" height="16" rx="3" fill="#181210"/>
+        <rect x="230" y="372" width="14" height="58" fill="#100e0c"/>
+        <rect x="556" y="372" width="14" height="58" fill="#100e0c"/>
+        <!-- Monitor -->
+        <rect x="320" y="288" width="160" height="92" rx="4" fill="#080808" stroke="#181818" stroke-width="1.5"/>
+        <rect x="329" y="296" width="142" height="76" rx="2" fill="#001800" opacity="0.9"/>
+        <text x="400" y="326" font-size="8" fill="#00cc33" text-anchor="middle" font-family="monospace" opacity="0.7">SECURITY CAM</text>
+        <text x="400" y="340" font-size="6" fill="#005500" text-anchor="middle" font-family="monospace" opacity="0.5">--- LIVE ---</text>
+        <text x="400" y="356" font-size="6" fill="#003300" text-anchor="middle" font-family="monospace" opacity="0.4">USE PANEL →</text>
+        <rect x="388" y="378" width="24" height="8" fill="#0f0f0f"/>
+        <rect x="374" y="384" width="52" height="4" rx="2" fill="#0f0f0f"/>
+        <!-- Kid stuff on desk: backpack, snack wrappers -->
+        <rect x="240" y="342" width="52" height="28" rx="4" fill="#0d1020" stroke="#181830" stroke-width="1"/>
+        <rect x="246" y="334" width="8" height="15" rx="3" fill="#0d1020" stroke="#181830" stroke-width="1"/>
+        <rect x="262" y="334" width="8" height="15" rx="3" fill="#0d1020" stroke="#181830" stroke-width="1"/>
+        <rect x="490" y="350" width="28" height="10" rx="2" fill="#0a1a0a" transform="rotate(-8 490 350)"/>
+        <!-- small phone on desk -->
+        <rect x="530" y="342" width="18" height="28" rx="3" fill="#0a0a0a" stroke="#1a1a1a" stroke-width="1"/>
+        <rect x="534" y="346" width="10" height="16" rx="1" fill="#002200" opacity="0.8"/>
+        <!-- Door frames -->
+        <rect x="0" y="0" width="88" height="520" fill="#060504"/>
+        <rect x="68" y="45" width="18" height="360" rx="3" fill="#0e0c0a" stroke="#181614" stroke-width="1"/>
+        <rect x="712" y="0" width="88" height="520" fill="#060504"/>
+        <rect x="714" y="45" width="18" height="360" rx="3" fill="#0e0c0a" stroke="#181614" stroke-width="1"/>
+        <!-- Wall posters -->
+        <rect x="110" y="35" width="90" height="115" rx="2" fill="#0c0a08" stroke="#181614" stroke-width="1"/>
+        <text x="155" y="70" font-size="7" fill="#1e1c18" text-anchor="middle" font-family="monospace">BUILDING</text>
+        <text x="155" y="82" font-size="7" fill="#1e1c18" text-anchor="middle" font-family="monospace">REGULATIONS</text>
+        <line x1="118" y1="92" x2="192" y2="92" stroke="#181614" stroke-width="1"/>
+        <!-- Missing child poster — eerie -->
+        <rect x="600" y="35" width="90" height="115" rx="2" fill="#0c0a08" stroke="#181614" stroke-width="1"/>
+        <text x="645" y="62" font-size="7" fill="#2a1a14" text-anchor="middle" font-family="monospace">MISSING</text>
+        <ellipse cx="645" cy="92" rx="16" ry="18" fill="#1a1208" stroke="#2a1a14" stroke-width="1"/>
+        <text x="645" y="125" font-size="6" fill="#1e1208" text-anchor="middle" font-family="monospace">HAVE YOU SEEN</text>
+        <text x="645" y="136" font-size="6" fill="#1e1208" text-anchor="middle" font-family="monospace">THIS CHILD?</text>
+        <!-- Vents -->
+        <rect x="150" y="4" width="64" height="16" rx="2" fill="#090807" stroke="#141210" stroke-width="1"/>
+        <line x1="162" y1="4" x2="162" y2="20" stroke="#141210" stroke-width="1"/>
+        <line x1="174" y1="4" x2="174" y2="20" stroke="#141210" stroke-width="1"/>
+        <line x1="186" y1="4" x2="186" y2="20" stroke="#141210" stroke-width="1"/>
+        <line x1="198" y1="4" x2="198" y2="20" stroke="#141210" stroke-width="1"/>
+        <rect x="586" y="4" width="64" height="16" rx="2" fill="#090807" stroke="#141210" stroke-width="1"/>
+        <line x1="598" y1="4" x2="598" y2="20" stroke="#141210" stroke-width="1"/>
+        <line x1="610" y1="4" x2="610" y2="20" stroke="#141210" stroke-width="1"/>
+        <line x1="622" y1="4" x2="622" y2="20" stroke="#141210" stroke-width="1"/>
+        <line x1="634" y1="4" x2="634" y2="20" stroke="#141210" stroke-width="1"/>
+      </svg>
+
+      <div class="epsilon-door left" id="epsilon-left" style="display:none"></div>
+      <div class="epsilon-door right" id="epsilon-right" style="display:none"></div>
+
+      <div class="door-overlay-left" id="door-overlay-left"></div>
+      <div class="door-overlay-right" id="door-overlay-right"></div>
+
+      <div class="light-overlay-left" id="light-overlay-left"></div>
+      <div class="light-overlay-right" id="light-overlay-right"></div>
+
+      <!-- Morgan figures at doors -->
+      <svg class="morgan-office left" id="morgan-left" width="100" height="190" viewBox="0 0 100 190">
+        <ellipse cx="50" cy="185" rx="22" ry="5" fill="#000" opacity="0.6"/>
+        <rect x="28" y="75" width="44" height="88" rx="6" fill="#050505"/>
+        <rect x="40" y="60" width="20" height="18" rx="4" fill="#050505"/>
+        <ellipse cx="50" cy="48" rx="22" ry="24" fill="#080808"/>
+        <path d="M28 45 Q28 20 50 18 Q72 20 72 45 Q66 30 50 29 Q34 30 28 45Z" fill="#030303"/>
+        <ellipse cx="40" cy="46" rx="7" ry="5" fill="#ff0000" opacity="0.85"/>
+        <ellipse cx="60" cy="46" rx="7" ry="5" fill="#ff0000" opacity="0.85"/>
+        <ellipse cx="40" cy="46" rx="3.5" ry="4" fill="#000"/>
+        <ellipse cx="60" cy="46" rx="3.5" ry="4" fill="#000"/>
+        <path d="M36 62 Q50 73 64 62" stroke="#5a0000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <rect x="33" y="158" width="14" height="32" rx="5" fill="#040404"/>
+        <rect x="53" y="158" width="14" height="32" rx="5" fill="#040404"/>
+        <rect x="4" y="78" width="28" height="10" rx="5" fill="#050505" transform="rotate(18 4 78)"/>
+        <rect x="68" y="78" width="28" height="10" rx="5" fill="#050505" transform="rotate(-18 96 78)"/>
+      </svg>
+
+      <svg class="morgan-office right" id="morgan-right" width="100" height="190" viewBox="0 0 100 190">
+        <ellipse cx="50" cy="185" rx="22" ry="5" fill="#000" opacity="0.6"/>
+        <rect x="28" y="75" width="44" height="88" rx="6" fill="#050505"/>
+        <rect x="40" y="60" width="20" height="18" rx="4" fill="#050505"/>
+        <ellipse cx="50" cy="48" rx="22" ry="24" fill="#080808"/>
+        <path d="M28 45 Q28 20 50 18 Q72 20 72 45 Q66 30 50 29 Q34 30 28 45Z" fill="#030303"/>
+        <ellipse cx="40" cy="46" rx="7" ry="5" fill="#ff0000" opacity="0.85"/>
+        <ellipse cx="60" cy="46" rx="7" ry="5" fill="#ff0000" opacity="0.85"/>
+        <ellipse cx="40" cy="46" rx="3.5" ry="4" fill="#000"/>
+        <ellipse cx="60" cy="46" rx="3.5" ry="4" fill="#000"/>
+        <path d="M36 62 Q50 73 64 62" stroke="#5a0000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <rect x="33" y="158" width="14" height="32" rx="5" fill="#040404"/>
+        <rect x="53" y="158" width="14" height="32" rx="5" fill="#040404"/>
+        <rect x="4" y="78" width="28" height="10" rx="5" fill="#050505" transform="rotate(18 4 78)"/>
+        <rect x="68" y="78" width="28" height="10" rx="5" fill="#050505" transform="rotate(-18 96 78)"/>
+      </svg>
+
+      <div class="fear-overlay" id="fear-overlay"></div>
+      <div class="scanlines"></div>
+      <div class="vignette"></div>
+      <div class="alert-bar" id="alert-bar">⚠ MOTION DETECTED ⚠</div>
+      <button class="door-btn" id="btn-left" onclick="toggleDoor('left')">LEFT<br>DOOR</button>
+      <button class="door-btn" id="btn-right" onclick="toggleDoor('right')">RIGHT<br>DOOR</button>
+      <button class="light-btn" id="btn-light-left" onclick="toggleLight('left')">LEFT<br>LIGHT</button>
+      <button class="light-btn" id="btn-light-right" onclick="toggleLight('right')">RIGHT<br>LIGHT</button>
+      <button class="cam-toggle-btn" id="btn-cam" onclick="toggleCamPanel()">CAMERA</button>
+      <div class="powerout-overlay" id="powerout-overlay">
+        <div class="powerout-text">⚠ FLASHLIGHT DIED ⚠</div>
+        <div style="font-size:10px;color:#111;letter-spacing:3px;margin-top:6px">he knows where you are now...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cam-panel-overlay" id="cam-panel-overlay" style="display:none">
+    <div class="cam-panel-overlay-inner" role="dialog" aria-modal="true">
+      <button class="cam-close" onclick="closeCamPanel()">CLOSE</button>
+      <div class="cam-panel">
+        <div class="cam-panel-title">// security cams //</div>
+        <div class="cam-feed" id="cam-feed">
+          <div class="cam-feed-label" id="cam-feed-label">CAM 1A — HALLWAY A</div>
+          <svg id="cam-svg" width="100%" height="100%" viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="240" height="160" fill="#030606"/>
+            <rect x="0" y="80" width="240" height="80" fill="#020404"/>
+            <line x1="0" y1="80" x2="240" y2="80" stroke="#081008" stroke-width="1"/>
+            <line x1="0" y1="40" x2="240" y2="40" stroke="#050d05" stroke-width="1"/>
+            <line x1="80" y1="0" x2="80" y2="80" stroke="#050d05" stroke-width="1"/>
+            <line x1="160" y1="0" x2="160" y2="80" stroke="#050d05" stroke-width="1"/>
+            <line x1="0" y1="0" x2="120" y2="80" stroke="#040a04" stroke-width="1"/>
+            <line x1="240" y1="0" x2="120" y2="80" stroke="#040a04" stroke-width="1"/>
+            <text x="120" y="125" font-size="8" fill="#081408" text-anchor="middle" font-family="monospace">HALLWAY A</text>
+            <circle cx="120" cy="8" r="4" fill="#001200" stroke="#002200" stroke-width="1"/>
+            <text x="4" y="156" font-size="7" fill="#004400" font-family="monospace" id="cam-timestamp">00:00:00</text>
+            <text x="236" y="156" font-size="7" fill="#005500" font-family="monospace" text-anchor="end">● REC</text>
+          </svg>
+          <div class="morgan-on-cam" id="morgan-on-cam" style="display:none">
+            <div class="morgan-cam-figure" aria-label="Morgan" role="img"></div>
+          </div>
+          <div class="epstein-on-cam" id="epstein-on-cam" style="display:none">
+            <div class="epstein-cam-figure" aria-label="Epstein" role="img"></div>
+          </div>
+          <div class="cam-overlay"></div>
+          <div class="cam-static" id="cam-static"></div>
+        </div>
+
+        <div class="cam-buttons">
+          <button class="cam-btn active" id="cambtn-1A" onclick="switchCam('1A')">CAM 1A</button>
+          <button class="cam-btn" id="cambtn-1B" onclick="switchCam('1B')">CAM 1B</button>
+          <button class="cam-btn" id="cambtn-2A" onclick="switchCam('2A')">CAM 2A</button>
+          <button class="cam-btn" id="cambtn-3A" onclick="switchCam('3A')">CAM 3A</button>
+          <button class="cam-btn" id="cambtn-4A" onclick="switchCam('4A')">CAM 4A</button>
+          <button class="cam-btn" id="cambtn-5A" onclick="switchCam('5A')">CAM 5A</button>
+          <button class="cam-btn" id="cambtn-6A" onclick="switchCam('6A')">LEFT DOOR</button>
+          <button class="cam-btn" id="cambtn-6B" onclick="switchCam('6B')">YOU</button>
+          <button class="cam-btn" id="cambtn-7A" onclick="switchCam('7A')">RIGHT DOOR</button>
+        </div>
+
+        <div class="cam-instructions">
+          SURVIVE UNTIL 6AM<br>
+          BLOCK DOORS WHEN MORGAN<br>
+          IS AT AN ENTRY POINT<br>
+          SAVE YOUR FLASHLIGHT BATTERY
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== JUMPSCARE ======== -->
+<div id="jumpscare-screen" class="screen">
+  <div class="scare-inner">
+    <div class="jumpscare-img" aria-label="Jumpscare" role="img"></div>
+    <div class="scare-text">FOUND YOU</div>
+    <div class="scare-sub">morgan was right behind you the whole time</div>
+    <button class="scare-btn" onclick="showLose()">TRY AGAIN</button>
+  </div>
+  <div class="noise"></div>
+</div>
+
+<!-- ======== WIN ======== -->
+<div id="win-screen" class="screen">
+  <div class="noise"></div>
+  <svg width="80" height="135" viewBox="0 0 110 195" xmlns="http://www.w3.org/2000/svg" style="opacity:0.22;margin-bottom:16px">
+    <ellipse cx="54" cy="67" rx="23" ry="25" fill="#003300"/>
+    <rect x="26" y="98" width="56" height="64" rx="11" fill="#002200"/>
+    <rect x="33" y="157" width="17" height="36" rx="7" fill="#001a00"/>
+    <rect x="58" y="157" width="17" height="36" rx="7" fill="#001a00"/>
+  </svg>
+  <div class="result-title">MADE IT.</div>
+  <div class="result-sub">
+    The sun came up.<br>
+    You heard the doors unlock.<br>
+    You ran, and you never looked back.
+  </div>
+  <div class="result-stat" id="win-stat">NIGHT 1 COMPLETE · FLASHLIGHT: --% LEFT</div>
+  <button class="result-btn" onclick="nextNight()">NEXT NIGHT →</button>
+</div>
+
+<!-- ======== LOSE ======== -->
+<div id="lose-screen" class="screen">
+  <div class="noise"></div>
+  <svg width="70" height="115" viewBox="0 0 110 195" xmlns="http://www.w3.org/2000/svg" style="opacity:0.17;margin-bottom:16px">
+    <ellipse cx="54" cy="67" rx="23" ry="25" fill="#1a0000"/>
+    <rect x="26" y="98" width="56" height="64" rx="11" fill="#100000"/>
+    <rect x="33" y="157" width="17" height="36" rx="7" fill="#0a0000"/>
+    <rect x="58" y="157" width="17" height="36" rx="7" fill="#0a0000"/>
+  </svg>
+  <div class="result-title">TOO SLOW.</div>
+  <div class="result-sub">
+    You didn't make it to morning.<br>
+    Morgan found you before the lights came on.
+  </div>
+  <div class="result-stat" id="lose-stat">NIGHT 1 · CAUGHT AT: --</div>
+  <button class="result-btn" onclick="retryNight()">TRY AGAIN</button>
+  <button class="result-btn secondary" onclick="goTitle()">← MAIN MENU</button>
+</div>
+
+<script src="five-nights-at-morgans.js"></script>
+</body>
+</html>
