@@ -300,20 +300,11 @@
         <div class="cam-panel-title">// security cams //</div>
         <div class="cam-feed" id="cam-feed">
           <div class="cam-feed-label" id="cam-feed-label">CAM 1A — HALLWAY A</div>
-          <svg id="cam-svg" width="100%" height="100%" viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <rect width="240" height="160" fill="#030606"/>
-            <rect x="0" y="80" width="240" height="80" fill="#020404"/>
-            <line x1="0" y1="80" x2="240" y2="80" stroke="#081008" stroke-width="1"/>
-            <line x1="0" y1="40" x2="240" y2="40" stroke="#050d05" stroke-width="1"/>
-            <line x1="80" y1="0" x2="80" y2="80" stroke="#050d05" stroke-width="1"/>
-            <line x1="160" y1="0" x2="160" y2="80" stroke="#050d05" stroke-width="1"/>
-            <line x1="0" y1="0" x2="120" y2="80" stroke="#040a04" stroke-width="1"/>
-            <line x1="240" y1="0" x2="120" y2="80" stroke="#040a04" stroke-width="1"/>
-            <text x="120" y="125" font-size="8" fill="#081408" text-anchor="middle" font-family="monospace">HALLWAY A</text>
-            <circle cx="120" cy="8" r="4" fill="#001200" stroke="#002200" stroke-width="1"/>
-            <text x="4" y="156" font-size="7" fill="#004400" font-family="monospace" id="cam-timestamp">00:00:00</text>
-            <text x="236" y="156" font-size="7" fill="#005500" font-family="monospace" text-anchor="end">● REC</text>
-          </svg>
+          <div class="cam-timestamp">
+            <span id="cam-timestamp" style="color:#004400;font-size:9px">00:00:00</span>
+            <span style="color:#005500;font-size:9px;float:right;margin-right:4px">● REC</span>
+            <div style="clear:both"></div>
+          </div>
           <div class="morgan-on-cam" id="morgan-on-cam" style="display:none">
             <div class="morgan-cam-figure" aria-label="Morgan" role="img"></div>
           </div>
