@@ -739,7 +739,7 @@ body {
 .jumpscare-img {
   width: min(420px, 92vw);
   height: min(520px, 55vh);
-  background: radial-gradient(circle at 50% 35%, rgba(255,40,40,0.35) 0%, rgba(60,0,0,0.65) 35%, rgba(0,0,0,0.98) 75%);
+  background: url('Morgan 1.0.png') center/cover no-repeat, radial-gradient(circle at 50% 35%, rgba(255,40,40,0.35) 0%, rgba(60,0,0,0.65) 35%, rgba(0,0,0,0.98) 75%);
   border: 3px solid rgba(255,40,40,0.25);
   box-shadow: 0 0 40px rgba(255,0,0,0.22);
   filter: contrast(1.25) saturate(0.8) brightness(0.9);

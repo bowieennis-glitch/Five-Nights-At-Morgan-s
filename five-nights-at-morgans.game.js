@@ -348,9 +348,11 @@ function triggerJumpscare(killer){
     img.classList.remove('shadow');
     img.classList.remove('hamlet');
     img.classList.remove('twigg');
+    img.classList.remove('power');
     if(state.lastKiller==='shadow') img.classList.add('shadow');
     if(state.lastKiller==='hamlet') img.classList.add('hamlet');
     if(state.lastKiller==='twigg') img.classList.add('twigg');
+    if(state.lastKiller==='power') img.classList.add('power');
   }
 
   const t=document.getElementById('scare-text');
