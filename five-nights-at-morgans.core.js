@@ -12,6 +12,13 @@ const CAM_LABELS = {
   '7A':'RIGHT DOOR',
 };
 
+const CLOCK_HOURS=[12,1,2,3,4,5];
+const CLOCK_LABELS=['12 AM','1 AM','2 AM','3 AM','4 AM','5 AM'];
+
+function $id(id){
+  return document.getElementById(id);
+}
+
 function camSvgTemplate(title, scene){
   return `
     <defs>
@@ -49,22 +56,6 @@ function camSvgTemplate(title, scene){
     <text x="4" y="156" font-size="7" fill="#004400" font-family="monospace" id="cam-timestamp">00:00:00</text>
     <text x="236" y="156" font-size="7" fill="#005500" font-family="monospace" text-anchor="end">● REC</text>
   `;
-}
-
-function setLightVisual(side,on){
-  const btn=document.getElementById(`btn-light-${side}`);
-  const ov=document.getElementById(`light-overlay-${side}`);
-  if(btn) btn.classList.toggle('on',!!on);
-  if(ov) ov.classList.toggle('on',!!on);
-}
-
-function toggleLight(side){
-  if(!state.running||state.gameOver||state.power<=0) return;
-  AUDIO.sfxLight();
-  if(side==='left') state.lightLeft=!state.lightLeft;
-  else state.lightRight=!state.lightRight;
-  setLightVisual(side,side==='left'?state.lightLeft:state.lightRight);
-  updateShadowOfficeVisual();
 }
 
 const CAM_SCENES = {
@@ -331,13 +322,14 @@ function updateCamScene(){
   svg.innerHTML=maker();
 }
 
-
 let state = {
   night:1, running:false, power:100, timeElapsed:0,
   doorLeft:false, doorRight:false, currentCam:'1A',
   morganLoc:'5A', morganMoveCooldown:0, morganAtDoor:null,
   morganAggression:0.55, jumpscarePending:false, gameOver:false, won:false,
   lastKiller:null,
+
+  aiLevels:{morgan:10,shadow:10,hamlet:10,twigg:10},
   morganCamLoc:null,
   morganCamObservedSeconds:0,
   morganCamObserveTargetSeconds:0,
@@ -357,12 +349,49 @@ let state = {
   lightLeft:false,
   lightRight:false,
   camLightOn:false,
+
+  hamletProgress:0,
+  hamletCamSeconds:0,
+  hamletCamSessionSeconds:0,
+
+  twiggNextAt:0,
+  twiggActive:false,
+  twiggFailSeconds:0,
+  twiggNeedle:0,
+  twiggNeedleDir:1,
+  twiggSafeCenter:0.5,
+  twiggSafeWidth:0.22,
 };
 
 let gameInterval=null, camTsInterval=null, alertTimeout=null;
 
 function randInt(min,max){
   return Math.floor(Math.random()*(max-min+1))+min;
+}
+
+function clampAI(v){
+  const n=Number(v);
+  if(!Number.isFinite(n)) return 10;
+  return Math.max(1,Math.min(20,Math.round(n)));
+}
+
+function getAILevel(name){
+  const key=String(name||'').toLowerCase();
+  const levels=state.aiLevels||{};
+  if(typeof levels[key]==='number') return clampAI(levels[key]);
+  return 10;
+}
+
+function setAILevel(name,value){
+  const key=String(name||'').toLowerCase();
+  if(!state.aiLevels) state.aiLevels={morgan:10,shadow:10,hamlet:10,twigg:10};
+  state.aiLevels[key]=clampAI(value);
+  return state.aiLevels[key];
+}
+
+function setAILevels(levels){
+  if(!levels || typeof levels!=='object') return;
+  Object.keys(levels).forEach(k=>setAILevel(k,levels[k]));
 }
 
 const AUDIO={
@@ -561,572 +590,3 @@ function pickRandomMorganCam(exclude){
   const choices=CAMS.filter(c=>c!==exclude && !blocked.has(c));
   return choices[Math.floor(Math.random()*choices.length)];
 }
-
-function initCamStareTimers(){
-  state.morganCamObservedSeconds=0;
-  state.morganCamObserveTargetSeconds=randInt(6,10);
-  state.morganCamPresenceSeconds=0;
-  state.morganCamScareLimitSeconds=randInt(30,50);
-  state.morganCamReappearSeconds=0;
-  state.morganCamNextLoc=null;
-  updateCamButtonDanger();
-}
-
-function updateCamButtonDanger(){
-  const btn=document.getElementById('btn-cam');
-  if(!btn){
-    return;
-  }
-
-  if(state.gameOver || !state.running){
-    btn.classList.remove('danger');
-    btn.style.animationDuration='';
-    return;
-  }
-
-  if(isCamPanelOpen()){
-    btn.classList.remove('danger');
-    btn.style.animationDuration='';
-    return;
-  }
-
-  if(!state.morganCamLoc){
-    btn.classList.remove('danger');
-    btn.style.animationDuration='';
-    return;
-  }
-
-  const limit=Math.max(1,(state.morganCamScareLimitSeconds||0));
-  const presence=Math.max(0,(state.morganCamPresenceSeconds||0));
-  const t=Math.min(1,Math.max(0,presence/limit));
-
-  if(t<=0.15){
-    btn.classList.remove('danger');
-    btn.style.animationDuration='';
-    return;
-  }
-
-  btn.classList.add('danger');
-  const dur=0.95-(0.75*t);
-  btn.style.animationDuration=`${Math.max(0.18,dur).toFixed(2)}s`;
-}
-
-function chaseMorganOffCam(){
-  const next=pickRandomMorganCam(state.morganCamLoc || state.currentCam);
-  state.morganCamNextLoc=next;
-  state.morganCamLoc=null;
-  state.morganLoc='offcam';
-  state.morganCamObservedSeconds=0;
-  state.morganCamPresenceSeconds=0;
-  state.morganCamReappearSeconds=randInt(10,15);
-  updateCamDanger();
-  updateCamButtonDanger();
-  checkMorganOnCurrentCam();
-}
-
-function handleMorganCameraBehavior(){
-  if(state.gameOver || !state.running) return;
-
-  if(state.morganCamReappearSeconds>0){
-    state.morganCamReappearSeconds--;
-    if(state.morganCamReappearSeconds===0 && state.morganCamNextLoc){
-      state.morganCamLoc=state.morganCamNextLoc;
-      state.morganCamNextLoc=null;
-      state.morganLoc=state.morganCamLoc;
-      state.morganCamObservedSeconds=0;
-      state.morganCamObserveTargetSeconds=randInt(6,10);
-      state.morganCamPresenceSeconds=0;
-      state.morganCamScareLimitSeconds=randInt(30,50);
-      updateCamDanger();
-      updateCamButtonDanger();
-      checkMorganOnCurrentCam();
-    }
-    return;
-  }
-
-  if(!state.morganCamLoc && CAMS.includes(state.morganLoc)){
-    state.morganCamLoc=state.morganLoc;
-    state.morganCamObservedSeconds=0;
-    state.morganCamObserveTargetSeconds=randInt(6,10);
-    state.morganCamPresenceSeconds=0;
-    state.morganCamScareLimitSeconds=randInt(30,50);
-  }
-
-  if(!state.morganCamLoc) return;
-
-  if(isCamPanelOpen()){
-    const watching=(state.currentCam===state.morganCamLoc);
-    if(watching && state.camLightOn){
-      state.morganCamObservedSeconds++;
-      if(state.morganCamObservedSeconds>=state.morganCamObserveTargetSeconds){
-        showAlert('⚠ HE DOESN\'T LIKE TO BE WATCHED ⚠');
-        chaseMorganOffCam();
-        return;
-      }
-    } else {
-      state.morganCamObservedSeconds=0;
-    }
-
-    updateCamButtonDanger();
-
-    return;
-  }
-
-  state.morganCamPresenceSeconds++;
-  updateCamButtonDanger();
-  if(state.morganCamPresenceSeconds>=state.morganCamScareLimitSeconds){
-    triggerJumpscare('morgan');
-  }
-  return;
-}
-
-function getMorganActiveCam(){
-  if(state.morganCamReappearSeconds>0) return null;
-  if(state.morganAtDoor==='left') return '1A';
-  if(state.morganAtDoor==='right') return '1B';
-  if(state.morganCamLoc) return state.morganCamLoc;
-  if(CAMS.includes(state.morganLoc)) return state.morganLoc;
-  return null;
-}
-
-function openCamPanel(){
-  if(!state.running||state.gameOver||state.power<=0) return;
-  document.getElementById('cam-panel-overlay').style.display='flex';
-  AUDIO.sfxCamOpen();
-  state.camLightOn=false;
-  updateCamLightVisual();
-  checkMorganOnCurrentCam();
-  checkShadowOnCurrentCam();
-}
-
-function closeCamPanel(){
-  document.getElementById('cam-panel-overlay').style.display='none';
-  AUDIO.sfxCamClose();
-  state.camLightOn=false;
-  updateCamLightVisual();
-  hideMorganOnCam();
-  hideShadowOnCam();
-}
-
-function updateCamLightVisual(){
-  const feed=document.getElementById('cam-feed');
-  if(feed) feed.classList.toggle('cam-lit',!!state.camLightOn);
-  const btn=document.getElementById('btn-cam-light');
-  if(btn) btn.classList.toggle('on',!!state.camLightOn);
-}
-
-function toggleCamLight(){
-  if(!state.running||state.gameOver||state.power<=0) return;
-  if(!isCamPanelOpen()) return;
-  state.camLightOn=!state.camLightOn;
-  AUDIO.sfxLight();
-  updateCamLightVisual();
-}
-
-function toggleCamPanel(){
-  const overlay=document.getElementById('cam-panel-overlay');
-  if(!overlay) return;
-  if(overlay.style.display==='none' || overlay.style.display==='') openCamPanel();
-  else closeCamPanel();
-}
-
-document.addEventListener('keydown',(e)=>{
-  if(e.key!=='Escape') return;
-  const overlay=document.getElementById('cam-panel-overlay');
-  if(!overlay) return;
-  if(overlay.style.display!=='none' && overlay.style.display!=='') closeCamPanel();
-});
-
-document.addEventListener('click',(e)=>{
-  const overlay=document.getElementById('cam-panel-overlay');
-  if(!overlay) return;
-  if(overlay.style.display==='none' || overlay.style.display==='') return;
-  if(e.target===overlay) closeCamPanel();
-});
-
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function updateNightIndicator(){
-  document.getElementById('night-indicator').textContent=`— Night ${state.night} —`;
-}
-
-function startGame(){
-  AUDIO.unlock();
-  AUDIO.startAmbience();
-  resetState();
-  showScreen('game-screen');
-  document.getElementById('topbar-night').textContent=`NIGHT ${state.night}`;
-  updatePowerDisplay();
-  updateCamScene();
-  initCamStareTimers();
-  if(gameInterval) clearInterval(gameInterval);
-  gameInterval=setInterval(tick,1000);
-  if(camTsInterval) clearInterval(camTsInterval);
-  let s=0;
-  camTsInterval=setInterval(()=>{
-    s++;
-    const hh=String(Math.floor(s/3600)).padStart(2,'0');
-    const mm=String(Math.floor((s%3600)/60)).padStart(2,'0');
-    const ss=String(s%60).padStart(2,'0');
-    const el=document.getElementById('cam-timestamp');
-    if(el) el.textContent=`${hh}:${mm}:${ss}`;
-  },1000);
-}
-
-function resetState(){
-  state.running=true; state.power=100; state.timeElapsed=0;
-  state.doorLeft=false; state.doorRight=false; state.currentCam='1A';
-  state.morganLoc=pickRandomMorganCam(null); state.morganMoveCooldown=0; state.morganAtDoor=null;
-  state.morganAggression=0.55+(state.night-1)*0.1;
-  state.jumpscarePending=false; state.gameOver=false; state.won=false;
-  state.lastKiller=null;
-  state.morganCamLoc=null;
-  initCamStareTimers();
-
-  state.shadowCamLoc=null;
-  state.shadowAtDoor=null;
-  state.shadowDoorPresenceSeconds=0;
-  state.shadowDoorScareLimitSeconds=0;
-  state.shadowMoveToDoorSeconds=0;
-  state.shadowPresenceSeconds=0;
-  state.shadowCooldownSeconds=randInt(10,18);
-
-  state.lightLeft=false; state.lightRight=false;
-  state.camLightOn=false;
-  updateCamLightVisual();
-
-  setDoorVisual('left',false); setDoorVisual('right',false);
-  setLightVisual('left',false); setLightVisual('right',false);
-  updateShadowOfficeVisual();
-  document.getElementById('morgan-left').className='morgan-office left';
-  document.getElementById('morgan-right').className='morgan-office right';
-  document.getElementById('fear-overlay').className='fear-overlay';
-  document.getElementById('powerout-overlay').classList.remove('show');
-  hideMorganOnCam(); clearAlert();
-  hideShadowOnCam();
-  CAMS.forEach(c=>{const b=document.getElementById(`cambtn-${c}`);if(b)b.className='cam-btn'+(c==='1A'?' active':'');});
-  updateCamScene();
-  updateCamDanger();
-}
-
-function tick(){
-  if(!state.running) return;
-  state.timeElapsed++;
-  let drain=0.5;
-  if(state.doorLeft) drain+=0.3;
-  if(state.doorRight) drain+=0.3;
-  if(state.lightLeft) drain+=0.22;
-  if(state.lightRight) drain+=0.22;
-  drain*=(1+(state.night-1)*0.07);
-  state.power=Math.max(0,state.power-drain);
-  updatePowerDisplay();
-  updateClock();
-  handleShadowAI();
-  handleMorganCameraBehavior();
-  if(state.timeElapsed/NIGHT_DURATION>=1&&!state.gameOver){winNight();return;}
-  if(state.power<=0&&!state.gameOver){powerOut();return;}
-}
-
-function updateClock(){
-  const p=state.timeElapsed/NIGHT_DURATION;
-  const hi=Math.min(5,Math.floor(p*6));
-  const min=Math.floor((p*6-hi)*60);
-  document.getElementById('clock-display').textContent=`${[12,1,2,3,4,5][hi]}:${String(min).padStart(2,'0')} AM`;
-}
-
-function isAfter1AM(){
-  return state.timeElapsed >= (NIGHT_DURATION/6);
-}
-
-function spawnShadow(){
-  const side=(Math.random()<0.5)?'left':'right';
-  state.shadowCamLoc=(side==='left')?'6A':'7A';
-  state.shadowPresenceSeconds=0;
-  state.shadowMoveToDoorSeconds=Math.max(6, Math.round(randInt(30,50)*0.8));
-  state.shadowAtDoor=null;
-  state.shadowCooldownSeconds=0;
-  checkShadowOnCurrentCam();
-}
-
-function handleShadowAI(){
-  if(!state.running||state.gameOver||state.power<=0) return;
-  if(!isAfter1AM()) return;
-
-  if(state.shadowCooldownSeconds>0) state.shadowCooldownSeconds--;
-
-  if(!state.shadowCamLoc && !state.shadowAtDoor){
-    if(state.shadowCooldownSeconds<=0){
-      spawnShadow();
-    }
-    return;
-  }
-
-  if(state.shadowCamLoc){
-    state.shadowPresenceSeconds++;
-    if(state.shadowPresenceSeconds>=state.shadowMoveToDoorSeconds){
-      const side=(state.shadowCamLoc==='6A')?'left':'right';
-      state.shadowCamLoc=null;
-      state.shadowAtDoor=side;
-      state.shadowDoorPresenceSeconds=0;
-      state.shadowDoorScareLimitSeconds=randInt(10,16);
-      showAlert(side==='left'?'⚠ SOMETHING IS AT THE LEFT DOOR ⚠':'⚠ SOMETHING IS AT THE RIGHT DOOR ⚠');
-      checkShadowOnCurrentCam();
-      updateShadowOfficeVisual();
-    }
-    checkShadowOnCurrentCam();
-    return;
-  }
-
-  if(state.shadowAtDoor){
-    const side=state.shadowAtDoor;
-    const closed=(side==='left')?state.doorLeft:state.doorRight;
-    if(closed){
-      repelShadowFromDoor(side,true);
-      return;
-    }
-
-    state.shadowDoorPresenceSeconds++;
-    updateShadowOfficeVisual();
-    if(state.shadowDoorPresenceSeconds>=state.shadowDoorScareLimitSeconds){
-      triggerJumpscare('shadow');
-    }
-  }
-}
-
-function repelShadowFromDoor(side,showMsg){
-  state.shadowAtDoor=null;
-  state.shadowDoorPresenceSeconds=0;
-  state.shadowDoorScareLimitSeconds=0;
-  state.shadowCooldownSeconds=randInt(12,20);
-  updateShadowOfficeVisual();
-  if(showMsg) showAlert('⚠ DOOR SHUT — IT BACKED OFF ⚠');
-}
-
-function updateShadowOfficeVisual(){
-  const l=document.getElementById('shadow-left');
-  const r=document.getElementById('shadow-right');
-  if(l) l.className='shadow-office left';
-  if(r) r.className='shadow-office right';
-
-  if(!state.shadowAtDoor) return;
-  const side=state.shadowAtDoor;
-  const lightOn=(side==='left')?state.lightLeft:state.lightRight;
-  const doorClosed=(side==='left')?state.doorLeft:state.doorRight;
-  if(doorClosed) return;
-  if(!lightOn) return;
-  const el=document.getElementById(`shadow-${side}`);
-  if(el) el.classList.add('peek');
-}
-
-function checkShadowOnCurrentCam(){
-  const onCam=(isCamPanelOpen() && state.shadowCamLoc && state.currentCam===state.shadowCamLoc);
-  if(onCam) showShadowOnCam(); else hideShadowOnCam();
-}
-
-function showShadowOnCam(){
-  const el=document.getElementById('shadow-on-cam');
-  if(el) el.style.display='flex';
-  document.getElementById('cam-static').className='cam-static on';
-}
-
-function hideShadowOnCam(){
-  const el=document.getElementById('shadow-on-cam');
-  if(el) el.style.display='none';
-}
-
-function updatePowerDisplay(){
-  const pct=Math.max(0,Math.round(state.power));
-  const bar=document.getElementById('power-bar');
-  const pctEl=document.getElementById('power-pct');
-  bar.style.width=pct+'%';
-  pctEl.textContent=pct+'%';
-  if(pct>50){bar.style.background='var(--green)';pctEl.style.color='var(--green)';}
-  else if(pct>20){bar.style.background='var(--amber)';pctEl.style.color='var(--amber)';}
-  else{bar.style.background='var(--red)';pctEl.style.color='var(--red)';}
-}
-
-function moveMorganCloser(){
-  const goDoorChance=Math.min(0.75, 0.18 + state.morganAggression*0.22 + (state.night-1)*0.05);
-  if(Math.random()<goDoorChance){
-    const side=(Math.random()<0.5)?'left':'right';
-    state.morganAtDoor=side;
-    state.morganLoc=side+'_door';
-    showMorganAtDoor(side);
-  } else {
-    const nextCam=pickRandomMorganCam(CAMS.includes(state.morganLoc)?state.morganLoc:null);
-    state.morganLoc=nextCam;
-  }
-  checkMorganOnCurrentCam();
-}
-
-function attemptEntry(){
-  const side=state.morganAtDoor;
-  const closed=side==='left'?state.doorLeft:state.doorRight;
-  if(closed){
-    state.morganAtDoor=null; state.morganLoc=pickRandomMorganCam(null);
-    hideMorganAtDoor(side);
-    showAlert('⚠ DOOR HELD — HE WALKED AWAY ⚠');
-  } else {
-    triggerJumpscare('morgan');
-  }
-}
-
-function showMorganAtDoor(side){
-  document.getElementById(`morgan-${side}`).className=`morgan-office ${side} peek`;
-  showAlert(side==='left'?'⚠ HE\'S AT THE LEFT DOOR ⚠':'⚠ HE\'S AT THE RIGHT DOOR ⚠');
-}
-
-function hideMorganAtDoor(side){
-  document.getElementById(`morgan-${side}`).className=`morgan-office ${side}`;
-}
-
-function checkMorganOnCurrentCam(){
-  const active=getMorganActiveCam();
-  const onCam=(active && state.currentCam===active);
-  if(onCam) showMorganOnCam(); else hideMorganOnCam();
-}
-
-function showMorganOnCam(){
-  document.getElementById('morgan-on-cam').style.display='flex';
-  document.getElementById('cam-static').className='cam-static on';
-}
-function hideMorganOnCam(){
-  document.getElementById('morgan-on-cam').style.display='none';
-  document.getElementById('cam-static').className='cam-static';
-}
-
-function updateCamDanger(){
-  CAMS.forEach(c=>{
-    const btn=document.getElementById(`cambtn-${c}`);if(!btn)return;
-    const active=getMorganActiveCam();
-    const has=(active===c);
-    if(has){
-      btn.classList.add('danger');
-      if(state.morganCamLoc && active===state.morganCamLoc){
-        const remaining=Math.max(0,(state.morganCamScareLimitSeconds||0)-(state.morganCamPresenceSeconds||0));
-        const t=Math.min(1,Math.max(0,1-(remaining/Math.max(1,(state.morganCamScareLimitSeconds||1)))));
-        const dur=(0.6-(0.48*t));
-        btn.style.animationDuration=`${dur.toFixed(2)}s`;
-      } else {
-        btn.style.animationDuration='0.50s';
-      }
-    } else {
-      btn.classList.remove('danger');
-      btn.style.animationDuration='';
-    }
-  });
-}
-
-function toggleDoor(side){
-  if(!state.running||state.gameOver||state.power<=0)return;
-  AUDIO.sfxDoor();
-  if(side==='left'){
-    state.doorLeft=!state.doorLeft;
-    setDoorVisual('left',state.doorLeft);
-    if(state.doorLeft && state.shadowAtDoor==='left') repelShadowFromDoor('left',true);
-  }
-  else{
-    state.doorRight=!state.doorRight;
-    setDoorVisual('right',state.doorRight);
-    if(state.doorRight && state.shadowAtDoor==='right') repelShadowFromDoor('right',true);
-  }
-  updateShadowOfficeVisual();
-}
-
-function setDoorVisual(side,closed){
-  const btn=document.getElementById(`btn-${side}`);
-  const ov=document.getElementById(`door-overlay-${side}`);
-  if(closed){btn.classList.add('closed');btn.innerHTML=`${side.toUpperCase()}<br>SHUT`;ov.classList.add('closed');}
-  else{btn.classList.remove('closed');btn.innerHTML=`${side.toUpperCase()}<br>DOOR`;ov.classList.remove('closed');}
-}
-
-function switchCam(cam){
-  if(cam==='6B') return;
-  state.currentCam=cam;
-  CAMS.forEach(c=>{const b=document.getElementById(`cambtn-${c}`);if(b)b.classList.toggle('active',c===cam);});
-  document.getElementById('cam-static').className='cam-static on';
-  setTimeout(()=>{
-    const m=document.getElementById('morgan-on-cam');
-    const s=document.getElementById('shadow-on-cam');
-    const mOn=!!m && m.style.display!=='none' && m.style.display!=='';
-    const sOn=!!s && s.style.display!=='none' && s.style.display!=='';
-    if(!mOn && !sOn) document.getElementById('cam-static').className='cam-static';
-  },180);
-  document.getElementById('cam-feed-label').textContent=`CAM ${cam} — ${CAM_LABELS[cam]||cam}`;
-  updateCamLightVisual();
-  updateCamScene();
-  checkMorganOnCurrentCam();
-  checkShadowOnCurrentCam();
-}
-
-function showAlert(msg){
-  const bar=document.getElementById('alert-bar');
-  bar.textContent=msg;bar.classList.add('show');
-  if(alertTimeout)clearTimeout(alertTimeout);
-  alertTimeout=setTimeout(()=>bar.classList.remove('show'),2800);
-}
-function clearAlert(){document.getElementById('alert-bar').classList.remove('show');}
-
-function powerOut(){
-  state.running=false;state.gameOver=true;
-  clearInterval(gameInterval);
-  document.getElementById('powerout-overlay').classList.add('show');
-  setTimeout(()=>triggerJumpscare('power'),3500);
-}
-
-function triggerJumpscare(killer){
-  if(state.jumpscarePending||state.won) return;
-  state.lastKiller=killer||state.lastKiller||'morgan';
-  AUDIO.scream();
-  AUDIO.stopAmbience();
-  state.jumpscarePending=true;state.running=false;state.gameOver=true;
-  clearInterval(gameInterval);clearInterval(camTsInterval);
-
-  const img=document.querySelector('#jumpscare-screen .jumpscare-img');
-  if(img){
-    img.classList.remove('shadow');
-    if(state.lastKiller==='shadow') img.classList.add('shadow');
-  }
-
-  const t=document.getElementById('scare-text');
-  const sub=document.getElementById('scare-sub');
-  if(t && sub){
-    if(state.lastKiller==='shadow'){
-      t.textContent='CAUGHT YOU';
-      sub.textContent='the blue shadow slipped in when you blinked';
-    } else if(state.lastKiller==='power'){
-      t.textContent='LIGHTS OUT';
-      sub.textContent='with no power, you were never safe';
-    } else {
-      t.textContent='FOUND YOU';
-      sub.textContent='morgan was right behind you the whole time';
-    }
-  }
-
-  document.body.style.background='#fff';
-  setTimeout(()=>{document.body.style.background='#000';showScreen('jumpscare-screen');},80);
-}
-
-function showLose(){
-  const p=state.timeElapsed/NIGHT_DURATION;
-  const hi=Math.min(5,Math.floor(p*6));
-  const who=(state.lastKiller==='shadow')?'SHADOW':(state.lastKiller==='power')?'THE DARK':'MORGAN';
-  document.getElementById('lose-stat').textContent=`NIGHT ${state.night} · KILLED BY ${who} · AROUND ${['12 AM','1 AM','2 AM','3 AM','4 AM','5 AM'][hi]}`;
-  showScreen('lose-screen');
-}
-
-function winNight(){
-  state.running=false;state.won=true;state.gameOver=true;
-  clearInterval(gameInterval);clearInterval(camTsInterval);
-  document.getElementById('win-stat').textContent=`NIGHT ${state.night} COMPLETE · POWER: ${Math.round(state.power)}% LEFT`;
-  setTimeout(()=>showScreen('win-screen'),600);
-}
-
-function nextNight(){state.night++;updateNightIndicator();startGame();}
-function retryNight(){updateNightIndicator();startGame();}
-function goTitle(){clearInterval(gameInterval);clearInterval(camTsInterval);updateNightIndicator();showScreen('title-screen');}
-
-updateNightIndicator();
