@@ -1087,8 +1087,9 @@ function triggerJumpscare(killer){
 
   const img=document.querySelector('#jumpscare-screen .jumpscare-img');
   if(img){
-    img.classList.remove('shadow');
+    img.classList.remove('shadow', 'power');
     if(state.lastKiller==='shadow') img.classList.add('shadow');
+    if(state.lastKiller==='power') img.classList.add('power');
   }
 
   const t=document.getElementById('scare-text');
