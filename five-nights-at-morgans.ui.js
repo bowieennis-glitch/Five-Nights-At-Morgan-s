@@ -153,6 +153,10 @@ function showScreen(id){
   }
 }
 
+function switchScreen(id){
+  showScreen(id);
+}
+
 function showAlert(msg){
   try {
     const bar=$id('alert-bar');

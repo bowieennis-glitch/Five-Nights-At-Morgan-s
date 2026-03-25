@@ -473,7 +473,7 @@ function triggerJumpscare(killer){
       screamAudio.pause();
       screamAudio.currentTime = 0;
     }
-    screamAudio = new Audio('scream.mp3');
+    screamAudio = new Audio('Scream.m4a');
     screamAudio.volume = 0.8;
     screamAudio.play().catch(err => console.log('Scream audio play error:', err));
     
@@ -549,7 +549,6 @@ function triggerJumpscare(killer){
     setTimeout(()=>{document.body.style.background='#000';},80);
     
     switchScreen('jumpscare-screen');
-    setTimeout(()=>switchScreen('death-screen'),5000);
   } catch(e) {
     console.error('Error in triggerJumpscare:', e);
     state.gameOver = true;
