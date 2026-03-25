@@ -69,265 +69,38 @@ function camSvgTemplate(title, scene){
 
 const CAM_SCENES = {
   '1A': () => camSvgTemplate('HALLWAY A', `
-    <image href="Images/Cam 1.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-    <rect x="10" y="20" width="220" height="82" fill="#030707" stroke="#081408" stroke-width="1" opacity="0.75"/>
-
-    <g opacity="0.95">
-      <rect x="16" y="28" width="28" height="68" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="46" y="28" width="28" height="68" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="76" y="28" width="28" height="68" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="106" y="28" width="28" height="68" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="136" y="28" width="28" height="68" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="166" y="28" width="28" height="68" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="196" y="28" width="28" height="68" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <line x1="16" y1="44" x2="224" y2="44" stroke="#071307" stroke-width="1" opacity="0.45"/>
-      <line x1="16" y1="60" x2="224" y2="60" stroke="#071307" stroke-width="1" opacity="0.35"/>
-      <line x1="16" y1="76" x2="224" y2="76" stroke="#071307" stroke-width="1" opacity="0.25"/>
-    </g>
-
-    <rect x="18" y="102" width="204" height="4" fill="#001800" opacity="0.25"/>
-    <rect x="26" y="106" width="188" height="3" fill="#001800" opacity="0.18"/>
-    <rect x="38" y="110" width="164" height="2" fill="#001800" opacity="0.12"/>
-
-    <g opacity="0.8">
-      <rect x="18" y="120" width="56" height="22" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="78" y="122" width="36" height="18" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="120" y="124" width="44" height="16" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="168" y="122" width="50" height="20" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <circle cx="54" cy="142" r="6" fill="#001200" opacity="0.15"/>
-    </g>
+    <image href="Images/Cam 1.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.5"/>
+    <rect x="10" y="20" width="220" height="82" fill="#000" opacity="0.35"/>
   `),
   '1B': () => camSvgTemplate('HALLWAY B', `
-    <image href="Images/Cam 2.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-    <rect x="10" y="20" width="220" height="82" fill="#030707" stroke="#081408" stroke-width="1" opacity="0.7"/>
-
-    <rect x="16" y="28" width="118" height="34" fill="#001800" opacity="0.22" stroke="#0a1a0a" stroke-width="1"/>
-    <text x="75" y="46" font-size="7" fill="#063006" font-family="monospace" text-anchor="middle" opacity="0.85">NOTICE BOARD</text>
-
-    <g opacity="0.9">
-      <rect x="150" y="28" width="74" height="68" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="156" y="34" width="62" height="20" fill="#021b02" opacity="0.18"/>
-      <rect x="156" y="58" width="62" height="32" fill="#030303" opacity="0.65"/>
-      <circle cx="170" cy="80" r="4" fill="#001200" opacity="0.18"/>
-      <circle cx="186" cy="80" r="4" fill="#001200" opacity="0.18"/>
-      <circle cx="202" cy="80" r="4" fill="#001200" opacity="0.18"/>
-      <path d="M156 90 Q187 70 218 90" stroke="#0a1a0a" stroke-width="2" fill="none" opacity="0.75"/>
-      <path d="M156 46 Q187 28 218 46" stroke="#0a1a0a" stroke-width="1.5" fill="none" opacity="0.55"/>
-    </g>
-
-    <g opacity="0.8">
-      <rect x="20" y="112" width="70" height="30" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="98" y="116" width="44" height="22" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="148" y="114" width="78" height="26" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <line x1="20" y1="128" x2="90" y2="128" stroke="#071307" stroke-width="1" opacity="0.25"/>
-    </g>
+    <image href="Images/Cam 2.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.5"/>
+    <rect x="10" y="20" width="220" height="82" fill="#000" opacity="0.35"/>
   `),
   '2A': () => camSvgTemplate('CLASSROOM 2A', `
-    <image href="Images/Cam 3.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-    <rect x="10" y="20" width="220" height="82" fill="#030707" stroke="#081408" stroke-width="1" opacity="0.7"/>
-    <rect x="16" y="26" width="124" height="30" fill="#001800" opacity="0.40" stroke="#0a1a0a" stroke-width="1"/>
-    <text x="78" y="45" font-size="8" fill="#006600" font-family="monospace" text-anchor="middle" opacity="0.85">WHITEBOARD</text>
-    <rect x="148" y="26" width="76" height="30" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-    <text x="186" y="44" font-size="6" fill="#063006" font-family="monospace" text-anchor="middle" opacity="0.75">POSTERS</text>
-
-    <g opacity="0.9">
-      <rect x="18" y="62" width="46" height="34" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="70" y="62" width="46" height="34" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="122" y="62" width="46" height="34" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="174" y="62" width="46" height="34" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <line x1="18" y1="79" x2="220" y2="79" stroke="#071307" stroke-width="1" opacity="0.18"/>
-    </g>
-
-    <g opacity="0.85">
-      <rect x="26" y="112" width="52" height="24" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="84" y="114" width="52" height="22" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="142" y="116" width="52" height="20" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="38" y="138" width="10" height="10" fill="#020404" opacity="0.7"/>
-      <rect x="96" y="140" width="10" height="8" fill="#020404" opacity="0.7"/>
-      <rect x="154" y="142" width="10" height="6" fill="#020404" opacity="0.7"/>
-    </g>
+    <image href="Images/Cam 3.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.5"/>
+    <rect x="10" y="20" width="220" height="82" fill="#000" opacity="0.35"/>
   `),
   '3A': () => camSvgTemplate('CAFETERIA', `
-    <image href="Images/Cam 4.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-    <rect x="10" y="20" width="220" height="82" fill="#030707" stroke="#081408" stroke-width="1" opacity="0.65"/>
-
-    <rect x="14" y="26" width="150" height="18" fill="#001800" opacity="0.18" stroke="#0a1a0a" stroke-width="1"/>
-    <text x="88" y="39" font-size="7" fill="#063006" font-family="monospace" text-anchor="middle" opacity="0.75">CAFETERIA</text>
-
-    <g opacity="0.9">
-      <rect x="170" y="26" width="56" height="70" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <text x="198" y="40" font-size="6" fill="#063006" font-family="monospace" text-anchor="middle" opacity="0.75">SERVE</text>
-      <rect x="176" y="44" width="44" height="10" fill="#021b02" opacity="0.18"/>
-      <rect x="176" y="58" width="44" height="10" fill="#021b02" opacity="0.14"/>
-      <rect x="176" y="72" width="44" height="18" fill="#030303" opacity="0.65"/>
-    </g>
-
-    <g opacity="0.88">
-      <rect x="20" y="54" width="56" height="16" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="84" y="54" width="56" height="16" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="20" y="74" width="56" height="16" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="84" y="74" width="56" height="16" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <line x1="48" y1="54" x2="48" y2="90" stroke="#071307" stroke-width="1" opacity="0.18"/>
-      <line x1="112" y1="54" x2="112" y2="90" stroke="#071307" stroke-width="1" opacity="0.18"/>
-    </g>
-
-    <g opacity="0.85">
-      <rect x="24" y="112" width="70" height="26" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="102" y="114" width="70" height="24" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="180" y="116" width="44" height="22" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <circle cx="54" cy="138" r="5" fill="#001200" opacity="0.12"/>
-      <circle cx="132" cy="138" r="5" fill="#001200" opacity="0.12"/>
-    </g>
+    <image href="Images/Cam 4.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.5"/>
+    <rect x="10" y="20" width="220" height="82" fill="#000" opacity="0.35"/>
   `),
   '4A': () => camSvgTemplate('LIBRARY', `
-    <image href="Images/Cam 5.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-    <rect x="10" y="20" width="220" height="82" fill="#030707" stroke="#081408" stroke-width="1" opacity="0.65"/>
-
-    <g opacity="0.92">
-      <rect x="14" y="24" width="56" height="76" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="72" y="24" width="56" height="76" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="130" y="24" width="56" height="76" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="188" y="24" width="38" height="76" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-
-      <line x1="14" y1="36" x2="226" y2="36" stroke="#071307" stroke-width="1" opacity="0.55"/>
-      <line x1="14" y1="50" x2="226" y2="50" stroke="#071307" stroke-width="1" opacity="0.45"/>
-      <line x1="14" y1="64" x2="226" y2="64" stroke="#071307" stroke-width="1" opacity="0.35"/>
-      <line x1="14" y1="78" x2="226" y2="78" stroke="#071307" stroke-width="1" opacity="0.25"/>
-      <line x1="14" y1="92" x2="226" y2="92" stroke="#071307" stroke-width="1" opacity="0.18"/>
-    </g>
-
-    <text x="40" y="16" font-size="7" fill="#063006" font-family="monospace" opacity="0.65">SILENCE</text>
-
-    <g opacity="0.85">
-      <rect x="22" y="112" width="76" height="28" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="108" y="114" width="58" height="24" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="172" y="116" width="54" height="22" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <line x1="22" y1="126" x2="98" y2="126" stroke="#071307" stroke-width="1" opacity="0.18"/>
-    </g>
+    <image href="Images/Cam 5.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.5"/>
+    <rect x="10" y="20" width="220" height="82" fill="#000" opacity="0.35"/>
   `),
   '5A': () => camSvgTemplate('MAIN ENTRANCE', `
-    <image href="Images/Cam 6.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-    <rect x="10" y="20" width="220" height="82" fill="#030707" stroke="#081408" stroke-width="1" opacity="0.65"/>
-
-    <g opacity="0.92">
-      <rect x="80" y="22" width="80" height="78" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <line x1="120" y1="22" x2="120" y2="100" stroke="#0a1a0a" stroke-width="1" opacity="0.9"/>
-      <circle cx="112" cy="62" r="2" fill="#001200"/>
-      <circle cx="128" cy="62" r="2" fill="#001200"/>
-      <rect x="84" y="26" width="32" height="18" fill="#021b02" opacity="0.16"/>
-      <rect x="124" y="26" width="32" height="18" fill="#021b02" opacity="0.16"/>
-      <rect x="84" y="48" width="72" height="48" fill="#030303" opacity="0.6"/>
-    </g>
-
-    <rect x="14" y="26" width="58" height="20" fill="#001800" opacity="0.22" stroke="#0a1a0a" stroke-width="1"/>
-    <text x="43" y="40" font-size="6" fill="#063006" font-family="monospace" text-anchor="middle" opacity="0.8">OFFICE</text>
-
-    <rect x="168" y="26" width="58" height="20" fill="#001800" opacity="0.15" stroke="#0a1a0a" stroke-width="1"/>
-    <text x="197" y="40" font-size="6" fill="#063006" font-family="monospace" text-anchor="middle" opacity="0.7">TROPHY</text>
-
-    <g opacity="0.82">
-      <rect x="18" y="112" width="70" height="28" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="92" y="114" width="56" height="24" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="152" y="112" width="74" height="28" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <line x1="18" y1="126" x2="88" y2="126" stroke="#071307" stroke-width="1" opacity="0.16"/>
-    </g>
+    <image href="Images/Cam 6.png" x="10" y="20" width="220" height="82" preserveAspectRatio="xMidYMid slice" opacity="0.5"/>
+    <rect x="10" y="20" width="220" height="82" fill="#000" opacity="0.35"/>
   `),
   '6A': () => camSvgTemplate('LEFT DOOR', `
-    <image href="Images/Cam 7.png" x="10" y="18" width="220" height="90" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-    <rect x="10" y="18" width="220" height="90" fill="#030606" stroke="#081408" stroke-width="1" opacity="0.75"/>
-
-    <rect x="14" y="22" width="124" height="78" fill="#020404" opacity="0.95"/>
-    <rect x="138" y="22" width="88" height="78" fill="#010101" opacity="0.98"/>
-
-    <g opacity="0.65">
-      <rect x="18" y="24" width="116" height="74" fill="#050403" opacity="0.70"/>
-      <rect x="18" y="24" width="116" height="18" fill="#0a0806" opacity="0.45"/>
-      <rect x="18" y="44" width="116" height="2" fill="#120f0c" opacity="0.35"/>
-      <rect x="18" y="60" width="116" height="2" fill="#120f0c" opacity="0.25"/>
-      <rect x="18" y="76" width="116" height="2" fill="#120f0c" opacity="0.18"/>
-    </g>
-
-    <g opacity="0.85">
-      <rect x="142" y="22" width="80" height="78" fill="#000" opacity="0.65"/>
-      <rect x="142" y="22" width="80" height="78" fill="#001000" opacity="0.06"/>
-      <path d="M144 30 L220 30" stroke="#001600" stroke-width="1" opacity="0.10"/>
-      <path d="M144 44 L220 44" stroke="#001600" stroke-width="1" opacity="0.08"/>
-      <path d="M144 58 L220 58" stroke="#001600" stroke-width="1" opacity="0.06"/>
-      <path d="M144 72 L220 72" stroke="#001600" stroke-width="1" opacity="0.05"/>
-    </g>
-
-    <g opacity="0.95">
-      <rect x="128" y="22" width="12" height="78" fill="#0b0a09"/>
-      <rect x="126" y="22" width="2" height="78" fill="#1a1612" opacity="0.9"/>
-      <rect x="140" y="22" width="2" height="78" fill="#1a1612" opacity="0.7"/>
-    </g>
-
-    <g opacity="0.55">
-      <rect x="10" y="108" width="220" height="4" fill="#020404" opacity="0.9"/>
-    </g>
+    <image href="Images/Left door.png" x="10" y="18" width="220" height="90" preserveAspectRatio="xMidYMid slice" opacity="0.5"/>
+    <rect x="10" y="18" width="220" height="90" fill="#000" opacity="0.35"/>
   `),
   '6B': () => camSvgTemplate('SCIENCE LAB', `
-    <rect x="10" y="20" width="220" height="82" fill="#030707" stroke="#081408" stroke-width="1" opacity="0.6"/>
-
-    <rect x="16" y="28" width="208" height="22" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-    <text x="120" y="43" font-size="7" fill="#063006" font-family="monospace" text-anchor="middle" opacity="0.8">LAB BENCH</text>
-
-    <g opacity="0.9">
-      <rect x="18" y="56" width="52" height="44" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="74" y="56" width="52" height="44" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="130" y="56" width="52" height="44" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="186" y="56" width="38" height="44" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-
-      <circle cx="34" cy="70" r="4" fill="#001200" opacity="0.16"/>
-      <circle cx="50" cy="72" r="3" fill="#001200" opacity="0.12"/>
-      <path d="M40 92 Q44 84 48 92" stroke="#0a1a0a" stroke-width="1" fill="none" opacity="0.6"/>
-
-      <rect x="86" y="66" width="12" height="16" fill="#001800" opacity="0.18"/>
-      <rect x="102" y="64" width="14" height="18" fill="#001800" opacity="0.12"/>
-      <circle cx="156" cy="72" r="5" fill="#001200" opacity="0.12"/>
-      <circle cx="204" cy="70" r="4" fill="#001200" opacity="0.12"/>
-    </g>
-
-    <g opacity="0.82">
-      <rect x="24" y="112" width="76" height="28" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="106" y="114" width="56" height="24" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <rect x="168" y="116" width="58" height="22" fill="#020404" stroke="#0a1a0a" stroke-width="1"/>
-      <line x1="24" y1="126" x2="100" y2="126" stroke="#071307" stroke-width="1" opacity="0.14"/>
-    </g>
   `),
   '7A': () => camSvgTemplate('RIGHT DOOR', `
-    <image href="Images/Cam 8.png" x="10" y="18" width="220" height="90" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-    <rect x="10" y="18" width="220" height="90" fill="#030606" stroke="#081408" stroke-width="1" opacity="0.75"/>
-
-    <rect x="14" y="22" width="88" height="78" fill="#010101" opacity="0.98"/>
-    <rect x="102" y="22" width="124" height="78" fill="#020404" opacity="0.95"/>
-
-    <g opacity="0.85">
-      <rect x="18" y="22" width="80" height="78" fill="#000" opacity="0.65"/>
-      <rect x="18" y="22" width="80" height="78" fill="#001000" opacity="0.06"/>
-      <path d="M20 30 L96 30" stroke="#001600" stroke-width="1" opacity="0.10"/>
-      <path d="M20 44 L96 44" stroke="#001600" stroke-width="1" opacity="0.08"/>
-      <path d="M20 58 L96 58" stroke="#001600" stroke-width="1" opacity="0.06"/>
-      <path d="M20 72 L96 72" stroke="#001600" stroke-width="1" opacity="0.05"/>
-    </g>
-
-    <g opacity="0.65">
-      <rect x="106" y="24" width="116" height="74" fill="#050403" opacity="0.70"/>
-      <rect x="106" y="24" width="116" height="18" fill="#0a0806" opacity="0.45"/>
-      <rect x="106" y="44" width="116" height="2" fill="#120f0c" opacity="0.35"/>
-      <rect x="106" y="60" width="116" height="2" fill="#120f0c" opacity="0.25"/>
-      <rect x="106" y="76" width="116" height="2" fill="#120f0c" opacity="0.18"/>
-    </g>
-
-    <g opacity="0.95">
-      <rect x="100" y="22" width="12" height="78" fill="#0b0a09"/>
-      <rect x="98" y="22" width="2" height="78" fill="#1a1612" opacity="0.7"/>
-      <rect x="112" y="22" width="2" height="78" fill="#1a1612" opacity="0.9"/>
-    </g>
-
-    <g opacity="0.55">
-      <rect x="10" y="108" width="220" height="4" fill="#020404" opacity="0.9"/>
-    </g>
+    <image href="Images/Right door.png" x="10" y="18" width="220" height="90" preserveAspectRatio="xMidYMid slice" opacity="0.5"/>
+    <rect x="10" y="18" width="220" height="90" fill="#000" opacity="0.35"/>
   `),
 };
 

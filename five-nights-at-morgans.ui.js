@@ -20,9 +20,9 @@ function toggleLight(side){
 function openCamPanel(){
   if(!state.running||state.gameOver||state.power<=0) return;
   $id('cam-panel-overlay').style.display='flex';
-  AUDIO.sfxCamOpen();
+  if(typeof AUDIO !== 'undefined' && AUDIO.sfxCamOpen) AUDIO.sfxCamOpen();
   state.camLightOn=false;
-  updateCamLightVisual();
+  if(typeof updateCamLightVisual === 'function') updateCamLightVisual();
   if(typeof addHamletProgress==='function'){
     const ai=(typeof getAILevel==='function')?getAILevel('hamlet'):10;
     const scale=ai/10;
@@ -31,38 +31,38 @@ function openCamPanel(){
   if(typeof updateUsageDisplay==='function' && typeof getRawDrain==='function' && typeof getNightMultiplier==='function'){
     updateUsageDisplay(getRawDrain(),getNightMultiplier());
   }
-  checkMorganOnCurrentCam();
+  if(typeof checkMorganOnCurrentCam === 'function') checkMorganOnCurrentCam();
+}
+
 function closeCamPanel(){
   $id('cam-panel-overlay').style.display='none';
-  AUDIO.sfxCamClose();
+  if(typeof AUDIO !== 'undefined' && AUDIO.sfxCamClose) AUDIO.sfxCamClose();
   state.camLightOn=false;
   // Reset enemy visibility flags when closing camera panel
   state.morganSeenWithLight=false;
   state.shadowSeenWithLight=false;
   state.hodgeSeenWithLight=false;
-  updateCamLightVisual();
+  if(typeof updateCamLightVisual === 'function') updateCamLightVisual();
   state.hamletCamSessionSeconds=0;
   if(typeof updateUsageDisplay==='function' && typeof getRawDrain==='function' && typeof getNightMultiplier==='function'){
     updateUsageDisplay(getRawDrain(),getNightMultiplier());
   }
-  hideMorganOnCam();
-  hideShadowOnCam();
-}
-  const feed=$id('cam-feed');
-  if(feed) feed.classList.toggle('cam-lit',!!state.camLightOn);
-  const btn=$id('btn-cam-light');
-  if(btn) btn.classList.toggle('on',!!state.camLightOn);
+  if(typeof hideMorganOnCam === 'function') hideMorganOnCam();
+  if(typeof hideShadowOnCam === 'function') hideShadowOnCam();
 }
 
 function toggleCamLight(){
   if(!state.running||state.gameOver||state.power<=0) return;
   if(!isCamPanelOpen()) return;
   state.camLightOn=!state.camLightOn;
-  AUDIO.sfxLight();
+  if(typeof AUDIO !== 'undefined' && AUDIO.sfxLight) AUDIO.sfxLight();
   updateCamLightVisual();
   if(typeof updateUsageDisplay==='function' && typeof getRawDrain==='function' && typeof getNightMultiplier==='function'){
     updateUsageDisplay(getRawDrain(),getNightMultiplier());
   }
+  // Update enemy visibility when camera light changes
+  if(typeof checkMorganOnCurrentCam === 'function') checkMorganOnCurrentCam();
+  if(typeof checkShadowOnCurrentCam === 'function') checkShadowOnCurrentCam();
 }
 
 function toggleCamPanel(){

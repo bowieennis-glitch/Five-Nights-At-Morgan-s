@@ -189,9 +189,11 @@ function checkMorganOnCurrentCam(){
 }
 
 function showMorganOnCam(){
-  // Show if: light is currently on (first reveal) OR was already seen with light on (persistent)
-  if(!state.camLightOn && !state.morganSeenWithLight) return;
-  if(state.camLightOn) state.morganSeenWithLight = true;
+  // Only show if camera light is ON
+  if(!state.camLightOn) {
+    $id('morgan-on-cam').style.display='none';
+    return;
+  }
   $id('morgan-on-cam').style.display='flex';
   $id('cam-static').className='cam-static on';
 }

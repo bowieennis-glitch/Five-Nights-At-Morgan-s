@@ -289,7 +289,7 @@ function resetState(){
 
   state.lightLeft=false; state.lightRight=false;
   state.camLightOn=false;
-  updateCamLightVisual();
+  if(typeof updateCamLightVisual === 'function') updateCamLightVisual();
 
   state.hamletProgress=0;
   state.hamletCamSeconds=0;
@@ -437,7 +437,7 @@ function switchCam(cam){
     if(!mOn && !sOn && !hOn) $id('cam-static').className='cam-static';
   },180);
   $id('cam-feed-label').textContent=`CAM ${cam} — ${CAM_LABELS[cam]||cam}`;
-  updateCamLightVisual();
+  if(typeof updateCamLightVisual === 'function') updateCamLightVisual();
   updateCamScene();
   checkMorganOnCurrentCam();
   checkShadowOnCurrentCam();
@@ -453,119 +453,107 @@ function powerOut(){
 
 function triggerJumpscare(killer){
   if(state.jumpscarePending||state.won) return;
-  state.lastKiller=killer||state.lastKiller||'morgan';
-  if(state.deaths && typeof state.deaths==='object'){
-    const k=String(state.lastKiller||'').toLowerCase();
-    if(typeof state.deaths[k]==='number') state.deaths[k]++;
-    else state.deaths[k]=1;
-    if(typeof saveProgress==='function') saveProgress();
-  }
-  AUDIO.scream();
-  AUDIO.stopAmbience();
-  
-  // Stop any existing scream and play new one
-  if(screamAudio) {
-    screamAudio.pause();
-    screamAudio.currentTime = 0;
-  }
-  screamAudio = new Audio('scream.mp3');
-  screamAudio.volume = 0.8;
-  screamAudio.play().catch(err => console.log('Scream audio play error:', err));
-  
-  state.jumpscarePending=true;state.running=false;state.gameOver=true;
-  clearInterval(gameInterval);clearInterval(camTsInterval);
-  if(twiggInterval){clearInterval(twiggInterval);twiggInterval=null;}
-  state.twiggActive=false;
-  updateTwiggUI();
-
-  const img=document.querySelector('#jumpscare-screen .jumpscare-img');
-  if(img){
-    img.classList.remove('shadow');
-    img.classList.remove('hamlet');
-    img.classList.remove('twigg');
-    img.classList.remove('hodge');
-    img.classList.remove('zoom-scare');
-    if(state.lastKiller==='shadow') img.classList.add('shadow');
-    if(state.lastKiller==='hamlet') img.classList.add('hamlet');
-    if(state.lastKiller==='twigg') img.classList.add('twigg');
-    if(state.lastKiller==='hodge') img.classList.add('hodge');
-    // Trigger zoom animation
-    img.classList.add('zoom-scare');
-  }
-
-  const t=document.getElementById('scare-text');
-  const sub=document.getElementById('scare-sub');
-  const tip=$id('scare-tip');
-  if(t && sub){
-    if(state.lastKiller==='shadow'){
-      t.textContent='CAUGHT YOU';
-      sub.textContent='the blue shadow slipped in when you blinked';
-    } else if(state.lastKiller==='hamlet'){
-      t.textContent='TOO CLOSE';
-      sub.textContent='mr hamlet was already in the room';
-    } else if(state.lastKiller==='twigg'){
-      t.textContent='MISSED IT';
-      sub.textContent='mr twigg doesn\'t forgive mistakes';
-    } else if(state.lastKiller==='hodge'){
-      t.textContent='NO ESCAPE';
-      sub.textContent='dr hodge waited at the door for you to slip';
-    } else if(state.lastKiller==='power'){
-      t.textContent='LIGHTS OUT';
-      sub.textContent='with no power, you were never safe';
-    } else {
-      t.textContent='FOUND YOU';
-      sub.textContent='morgan was right behind you the whole time';
+  try {
+    state.lastKiller=killer||state.lastKiller||'morgan';
+    if(state.deaths && typeof state.deaths==='object'){
+      const k=String(state.lastKiller||'').toLowerCase();
+      if(typeof state.deaths[k]==='number') state.deaths[k]++;
+      else state.deaths[k]=1;
+      if(typeof saveProgress==='function') saveProgress();
     }
-  }
-
-  if(tip){
-    if(state.lastKiller==='shadow'){
-      const tips=[
-        'TIP: Something at the door doesn\'t always show itself. Try using light at the right time.',
-        'TIP: If you sense you\'re being watched from one side, act fast—waiting is dangerous.',
-        'TIP: Some things back off when you take control of the doorway.'
-      ];
-      tip.textContent=tips[Math.floor(Math.random()*tips.length)];
-    } else if(state.lastKiller==='hamlet'){
-      const tips=[
-        'TIP: Some things don\'t come from the halls. Pay attention to what you bring back with you.',
-        'TIP: The more you hide behind the screens, the more the office changes.',
-        'TIP: If something feels wrong after checking cameras, trust that feeling.'
-      ];
-      tip.textContent=tips[Math.floor(Math.random()*tips.length)];
-    } else if(state.lastKiller==='twigg'){
-      const tips=[
-        'TIP: When the room goes quiet, keep your hands ready. Hesitation gets punished.',
-        'TIP: Not every threat comes from a door. Sometimes you only get one chance.',
-        'TIP: The safe moment is smaller than it looks. Wait too long and it\'s over.'
-      ];
-      tip.textContent=tips[Math.floor(Math.random()*tips.length)];
-    } else if(state.lastKiller==='hodge'){
-      const tips=[
-        'TIP: Close the door to make him leave. Keeping it open only buys him time.',
-        'TIP: If you see him creeping closer on cameras, prepare to shut the right door.',
-        'TIP: Don\'t wait for the last second—he punishes hesitation.'
-      ];
-      tip.textContent=tips[Math.floor(Math.random()*tips.length)];
-    } else if(state.lastKiller==='power'){
-      const tips=[
-        'TIP: Power is safety. Waste it, and you\'ll pay for it later.',
-        'TIP: If the night feels quiet, that\'s when you should save power the most.',
-        'TIP: Lights and doors are expensive. Use them like they\'re your last.'
-      ];
-      tip.textContent=tips[Math.floor(Math.random()*tips.length)];
-    } else {
-      const tips=[
-        'TIP: Staring too long can make things move. Sometimes that\'s exactly what you want.',
-        'TIP: Don\'t get comfortable on one camera. Keep control of what you\'re seeing.',
-        'TIP: If you lose track of him, the office gets a lot smaller.'
-      ];
-      tip.textContent=tips[Math.floor(Math.random()*tips.length)];
+    if(typeof AUDIO !== 'undefined' && AUDIO.scream) {
+      AUDIO.scream();
     }
-  }
+    if(typeof AUDIO !== 'undefined' && AUDIO.stopAmbience) {
+      AUDIO.stopAmbience();
+    }
+    
+    // Stop any existing scream and play new one
+    if(typeof screamAudio !== 'undefined' && screamAudio) {
+      screamAudio.pause();
+      screamAudio.currentTime = 0;
+    }
+    screamAudio = new Audio('scream.mp3');
+    screamAudio.volume = 0.8;
+    screamAudio.play().catch(err => console.log('Scream audio play error:', err));
+    
+    state.jumpscarePending=true;state.running=false;state.gameOver=true;
+    clearInterval(gameInterval);clearInterval(camTsInterval);
+    if(twiggInterval){clearInterval(twiggInterval);twiggInterval=null;}
+    state.twiggActive=false;
+    updateTwiggUI();
 
-  document.body.style.background='#fff';
-  setTimeout(()=>{document.body.style.background='#000';showScreen('jumpscare-screen');},80);
+    const img=document.querySelector('#jumpscare-screen .jumpscare-img');
+    if(img){
+      img.classList.remove('shadow');
+      img.classList.remove('hamlet');
+      img.classList.remove('twigg');
+      img.classList.remove('hodge');
+      img.classList.remove('zoom-scare');
+      if(state.lastKiller==='shadow') img.classList.add('shadow');
+      if(state.lastKiller==='hamlet') img.classList.add('hamlet');
+      if(state.lastKiller==='twigg') img.classList.add('twigg');
+      if(state.lastKiller==='hodge') img.classList.add('hodge');
+      // Trigger zoom animation
+      img.classList.add('zoom-scare');
+    }
+
+    const t=document.getElementById('scare-text');
+    const sub=document.getElementById('scare-sub');
+    const tip=$id('scare-tip');
+    if(t && sub){
+      if(state.lastKiller==='shadow'){
+        t.textContent='CAUGHT YOU';
+        sub.textContent='the blue shadow slipped in when you blinked';
+      } else if(state.lastKiller==='hamlet'){
+        t.textContent='TOO CLOSE';
+        sub.textContent='mr hamlet was already in the room';
+      } else if(state.lastKiller==='twigg'){
+        t.textContent='MISSED IT';
+        sub.textContent='mr twigg doesn\'t forgive mistakes';
+      } else if(state.lastKiller==='hodge'){
+        t.textContent='NO ESCAPE';
+        sub.textContent='dr hodge waited at the door for you to slip';
+      } else if(state.lastKiller==='power'){
+        t.textContent='LIGHTS OUT';
+        sub.textContent='with no power, you were never safe';
+      } else {
+        t.textContent='FOUND YOU';
+        sub.textContent='morgan was right behind you the whole time';
+      }
+    }
+    
+    if(tip){
+      if(state.lastKiller==='shadow'){
+        const tips=['TIP: Something at the door doesn\'t always show itself. Try using light at the right time.','TIP: If you sense you\'re being watched from one side, act fast—waiting is dangerous.','TIP: Some things back off when you take control of the doorway.'];
+        tip.textContent=tips[Math.floor(Math.random()*tips.length)];
+      } else if(state.lastKiller==='hamlet'){
+        const tips=['TIP: Some things don\'t come from the halls. Pay attention to what you bring back with you.','TIP: The more you hide behind the screens, the more the office changes.','TIP: If something feels wrong after checking cameras, trust that feeling.'];
+        tip.textContent=tips[Math.floor(Math.random()*tips.length)];
+      } else if(state.lastKiller==='twigg'){
+        const tips=['TIP: When the room goes quiet, keep your hands ready. Hesitation gets punished.','TIP: Not every threat comes from a door. Sometimes you only get one chance.','TIP: The safe moment is smaller than it looks. Wait too long and it\'s over.'];
+        tip.textContent=tips[Math.floor(Math.random()*tips.length)];
+      } else if(state.lastKiller==='hodge'){
+        const tips=['TIP: Close the door to make him leave. Keeping it open only buys him time.','TIP: If you see him creeping closer on cameras, prepare to shut the right door.','TIP: Don\'t wait for the last second—he punishes hesitation.'];
+        tip.textContent=tips[Math.floor(Math.random()*tips.length)];
+      } else if(state.lastKiller==='power'){
+        const tips=['TIP: Power is safety. Waste it, and you\'ll pay for it later.','TIP: If the night feels quiet, that\'s when you should save power the most.','TIP: Lights and doors are expensive. Use them like they\'re your last.'];
+        tip.textContent=tips[Math.floor(Math.random()*tips.length)];
+      } else {
+        const tips=['TIP: Staring too long can make things move. Sometimes that\'s exactly what you want.','TIP: Don\'t get comfortable on one camera. Keep control of what you\'re seeing.','TIP: If you lose track of him, the office gets a lot smaller.'];
+        tip.textContent=tips[Math.floor(Math.random()*tips.length)];
+      }
+    }
+    
+    document.body.style.background='#fff';
+    setTimeout(()=>{document.body.style.background='#000';},80);
+    
+    switchScreen('jumpscare-screen');
+    setTimeout(()=>switchScreen('death-screen'),5000);
+  } catch(e) {
+    console.error('Error in triggerJumpscare:', e);
+    state.gameOver = true;
+  }
 }
 
 function winNight(){
@@ -619,6 +607,42 @@ function goTitle(){
   } catch(error){
     console.error('Error going to title:', error);
   }
+}
+
+function updateCamLightVisual(){
+  const feed=$id('cam-feed');
+  if(feed) feed.classList.toggle('cam-lit',!!state.camLightOn);
+  const btn=$id('btn-cam-light');
+  if(btn) btn.classList.toggle('on',!!state.camLightOn);
+}
+
+function isCamPanelOpen(){
+  const overlay=$id('cam-panel-overlay');
+  if(!overlay) return false;
+  return overlay.style.display!=='none' && overlay.style.display!=='';
+}
+
+function closeCamPanel(){
+  $id('cam-panel-overlay').style.display='none';
+  if(typeof AUDIO !== 'undefined' && AUDIO.sfxCamClose) AUDIO.sfxCamClose();
+  state.camLightOn=false;
+  state.morganSeenWithLight=false;
+  state.shadowSeenWithLight=false;
+  state.hodgeSeenWithLight=false;
+  updateCamLightVisual();
+  if(typeof hideMorganOnCam === 'function') hideMorganOnCam();
+  if(typeof hideShadowOnCam === 'function') hideShadowOnCam();
+}
+
+function toggleCamLight(){
+  if(!state.running||state.gameOver||state.power<=0) return;
+  if(!isCamPanelOpen()) return;
+  state.camLightOn=!state.camLightOn;
+  if(typeof AUDIO !== 'undefined' && AUDIO.sfxLight) AUDIO.sfxLight();
+  updateCamLightVisual();
+  if(typeof checkMorganOnCurrentCam === 'function') checkMorganOnCurrentCam();
+  if(typeof checkShadowOnCurrentCam === 'function') checkShadowOnCurrentCam();
+  if(typeof updateHodgeOnCurrentCam === 'function') updateHodgeOnCurrentCam();
 }
 
 updateNightIndicator();
