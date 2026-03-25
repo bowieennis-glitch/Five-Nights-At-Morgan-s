@@ -183,7 +183,7 @@ function updateNightIndicator(){
   try {
     const indicator = $id('night-indicator');
     if(indicator && state && typeof state.night !== 'undefined') {
-      indicator.textContent=`— Night ${state.night} —`;
+      indicator.textContent=`-- Night ${state.night} --`;
     }
   } catch(error){
     console.error('Error updating night indicator:', error);

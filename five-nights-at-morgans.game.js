@@ -1,3 +1,5 @@
+let screamAudio = null;
+
 function updatePowerDisplay(){
   const pct=Math.max(0,Math.round(state.power));
   const bar=$id('power-bar');
@@ -171,7 +173,7 @@ function startTwiggMinigame(){
   state.twiggSafeCenter=0.25 + Math.random()*0.50;
 
   updateTwiggUI();
-  showAlert('⚠ MR TWIGG — DON\'T MISS ⚠');
+  showAlert('WARNING: MR TWIGG - DON\'T MISS');
 
   if(twiggInterval) clearInterval(twiggInterval);
   twiggInterval=setInterval(()=>{
@@ -192,7 +194,7 @@ function endTwiggMinigame(success){
   updateTwiggUI();
   if(twiggInterval){clearInterval(twiggInterval);twiggInterval=null;}
   if(success){
-    showAlert('⚠ NICE SAVE ⚠');
+    showAlert('NICE SAVE');
     scheduleNextTwigg();
   } else {
     triggerJumpscare('twigg');
@@ -396,7 +398,7 @@ function toggleDoor(side){
     setDoorVisual('left',state.doorLeft);
     if(state.doorLeft && state.shadowAtDoor==='left') repelShadowFromDoor('left',true);
     if(state.doorLeft && state.hodgeAtDoor==='left'){
-      showAlert('⚠ DOOR SHUT — DR HODGE BACKED OFF ⚠');
+      showAlert('WARNING: DOOR SHUT - DR HODGE BACKED OFF');
     }
   }
   else{
@@ -404,7 +406,7 @@ function toggleDoor(side){
     setDoorVisual('right',state.doorRight);
     if(state.doorRight && state.shadowAtDoor==='right') repelShadowFromDoor('right',true);
     if(state.doorRight && state.hodgeAtDoor==='right'){
-      showAlert('⚠ DOOR SHUT — DR HODGE BACKED OFF ⚠');
+      showAlert('WARNING: DOOR SHUT - DR HODGE BACKED OFF');
     }
   }
   updateShadowOfficeVisual();
@@ -436,7 +438,7 @@ function switchCam(cam){
     const hOn=!!h && h.style.display!=='none' && h.style.display!=='';
     if(!mOn && !sOn && !hOn) $id('cam-static').className='cam-static';
   },180);
-  $id('cam-feed-label').textContent=`CAM ${cam} — ${CAM_LABELS[cam]||cam}`;
+  $id('cam-feed-label').textContent=`CAM ${cam} - ${CAM_LABELS[cam]||cam}`;
   if(typeof updateCamLightVisual === 'function') updateCamLightVisual();
   updateCamScene();
   checkMorganOnCurrentCam();
@@ -525,7 +527,7 @@ function triggerJumpscare(killer){
     
     if(tip){
       if(state.lastKiller==='shadow'){
-        const tips=['TIP: Something at the door doesn\'t always show itself. Try using light at the right time.','TIP: If you sense you\'re being watched from one side, act fast—waiting is dangerous.','TIP: Some things back off when you take control of the doorway.'];
+        const tips=['TIP: Something at the door doesn\'t always show itself. Try using light at the right time.','TIP: If you sense you\'re being watched from one side, act fast - waiting is dangerous.','TIP: Some things back off when you take control of the doorway.'];
         tip.textContent=tips[Math.floor(Math.random()*tips.length)];
       } else if(state.lastKiller==='hamlet'){
         const tips=['TIP: Some things don\'t come from the halls. Pay attention to what you bring back with you.','TIP: The more you hide behind the screens, the more the office changes.','TIP: If something feels wrong after checking cameras, trust that feeling.'];
@@ -534,7 +536,7 @@ function triggerJumpscare(killer){
         const tips=['TIP: When the room goes quiet, keep your hands ready. Hesitation gets punished.','TIP: Not every threat comes from a door. Sometimes you only get one chance.','TIP: The safe moment is smaller than it looks. Wait too long and it\'s over.'];
         tip.textContent=tips[Math.floor(Math.random()*tips.length)];
       } else if(state.lastKiller==='hodge'){
-        const tips=['TIP: Close the door to make him leave. Keeping it open only buys him time.','TIP: If you see him creeping closer on cameras, prepare to shut the right door.','TIP: Don\'t wait for the last second—he punishes hesitation.'];
+        const tips=['TIP: Close the door to make him leave. Keeping it open only buys him time.','TIP: If you see him creeping closer on cameras, prepare to shut the right door.','TIP: Don\'t wait for the last second - he punishes hesitation.'];
         tip.textContent=tips[Math.floor(Math.random()*tips.length)];
       } else if(state.lastKiller==='power'){
         const tips=['TIP: Power is safety. Waste it, and you\'ll pay for it later.','TIP: If the night feels quiet, that\'s when you should save power the most.','TIP: Lights and doors are expensive. Use them like they\'re your last.'];
@@ -558,7 +560,7 @@ function triggerJumpscare(killer){
 function winNight(){
   state.running=false;state.won=true;state.gameOver=true;
   clearInterval(gameInterval);clearInterval(camTsInterval);
-  $id('win-stat').textContent=`NIGHT ${state.night} COMPLETE · POWER: ${Math.round(state.power)}% LEFT`;
+  $id('win-stat').textContent=`NIGHT ${state.night} COMPLETE - POWER: ${Math.round(state.power)}% LEFT`;
   state.night++;
   updateNightIndicator();
   if(typeof saveProgress==='function') saveProgress();

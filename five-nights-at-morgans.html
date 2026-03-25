@@ -24,17 +24,17 @@
     <div class="title-tagline">you weren't supposed to be here.</div>
     <div class="title-lore">
       You fell asleep on the bus.<br>
-      Now you're locked inside Morgan's office building — alone.<br>
+      Now you're locked inside Morgan's office building - alone.<br>
       Something is walking the halls. It knows you're here.
     </div>
-    <div class="title-night" id="night-indicator">— Night 1 —</div>
+    <div class="title-night" id="night-indicator">-- Night 1 --</div>
     <div class="title-actions">
       <button class="title-btn" onclick="startGame()">STAY TILL MORNING</button>
       <button class="title-btn secondary" onclick="openManual()">MANUAL</button>
       <button class="title-btn secondary" onclick="openCustomNight()">CUSTOM NIGHT</button>
     </div>
   </div>
-  <div class="title-warning">⚠ YOU ARE NOT SUPPOSED TO BE HERE ⚠</div>
+  <div class="title-warning">WARNING: YOU ARE NOT SUPPOSED TO BE HERE</div>
 </div>
 
 <div class="manual-overlay" id="manual-overlay" style="display:none" role="dialog" aria-modal="true">
@@ -247,7 +247,7 @@
         <rect x="329" y="296" width="142" height="76" rx="2" fill="#001800" opacity="0.9"/>
         <text x="400" y="326" font-size="8" fill="#00cc33" text-anchor="middle" font-family="monospace" opacity="0.7">SECURITY CAM</text>
         <text x="400" y="340" font-size="6" fill="#005500" text-anchor="middle" font-family="monospace" opacity="0.5">--- LIVE ---</text>
-        <text x="400" y="356" font-size="6" fill="#003300" text-anchor="middle" font-family="monospace" opacity="0.4">USE PANEL →</text>
+        <text x="400" y="356" font-size="6" fill="#003300" text-anchor="middle" font-family="monospace" opacity="0.4">USE PANEL -></text>
         <rect x="388" y="378" width="24" height="8" fill="#0f0f0f"/>
         <rect x="374" y="384" width="52" height="4" rx="2" fill="#0f0f0f"/>
         <!-- Kid stuff on desk: backpack, snack wrappers -->
@@ -268,7 +268,7 @@
         <text x="155" y="70" font-size="7" fill="#1e1c18" text-anchor="middle" font-family="monospace">BUILDING</text>
         <text x="155" y="82" font-size="7" fill="#1e1c18" text-anchor="middle" font-family="monospace">REGULATIONS</text>
         <line x1="118" y1="92" x2="192" y2="92" stroke="#181614" stroke-width="1"/>
-        <!-- Missing child poster — eerie -->
+        <!-- Missing child poster - eerie -->
         <rect x="600" y="35" width="90" height="115" rx="2" fill="#0c0a08" stroke="#181614" stroke-width="1"/>
         <text x="645" y="62" font-size="7" fill="#2a1a14" text-anchor="middle" font-family="monospace">MISSING</text>
         <ellipse cx="645" cy="92" rx="16" ry="18" fill="#1a1208" stroke="#2a1a14" stroke-width="1"/>
@@ -376,7 +376,7 @@
       <div class="fear-overlay" id="fear-overlay"></div>
       <div class="scanlines"></div>
       <div class="vignette"></div>
-      <div class="alert-bar" id="alert-bar">⚠ MOTION DETECTED ⚠</div>
+      <div class="alert-bar" id="alert-bar">MOTION DETECTED</div>
       <button class="door-btn" id="btn-left" onclick="toggleDoor('left')">LEFT<br>DOOR</button>
       <button class="door-btn" id="btn-right" onclick="toggleDoor('right')">RIGHT<br>DOOR</button>
       <button class="light-btn" id="btn-light-left" onclick="toggleLight('left')">LEFT<br>LIGHT</button>
@@ -396,7 +396,7 @@
       </div>
 
       <div class="powerout-overlay" id="powerout-overlay">
-        <div class="powerout-text">⚠ POWER OUT ⚠</div>
+        <div class="powerout-text">POWER OUT</div>
         <div style="font-size:10px;color:#111;letter-spacing:3px;margin-top:6px">he knows where you are now...</div>
       </div>
     </div>
@@ -409,7 +409,7 @@
       <div class="cam-panel">
         <div class="cam-panel-title">// security cams //</div>
         <div class="cam-feed" id="cam-feed">
-          <div class="cam-feed-label" id="cam-feed-label">CAM 1A — HALLWAY A</div>
+          <div class="cam-feed-label" id="cam-feed-label">CAM 1A - HALLWAY A</div>
           <div class="cam-hud" aria-label="Camera HUD">
             <div class="cam-hud-row">
               <div class="cam-hud-item" id="cam-clock-display">12:00 AM</div>
@@ -500,8 +500,8 @@
     You heard the doors unlock.<br>
     You ran, and you never looked back.
   </div>
-  <div class="result-stat" id="win-stat">NIGHT 1 COMPLETE · POWER: --% LEFT</div>
-  <button class="result-btn" onclick="nextNight()">NEXT NIGHT →</button>
+  <div class="result-stat" id="win-stat">NIGHT 1 COMPLETE - POWER: --% LEFT</div>
+  <button class="result-btn" onclick="nextNight()">NEXT NIGHT -></button>
 </div>
 
 <script src="five-nights-at-morgans.core.js"></script>
