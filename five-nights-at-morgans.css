@@ -76,6 +76,77 @@ body {
   user-select: none;
 }
 
+.custom-night-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.82);
+  backdrop-filter: blur(1px);
+}
+
+.custom-night-card{
+  width: min(680px, 94vw);
+  padding: 18px;
+  border: 2px solid rgba(0,255,65,0.18);
+  background: radial-gradient(circle at 50% 10%, rgba(0,255,65,0.10) 0%, rgba(0,0,0,0.92) 70%);
+  box-shadow: 0 0 60px rgba(0,255,65,0.08);
+}
+
+.custom-night-title{ font-family:'Creepster',cursive; font-size: 44px; letter-spacing: 6px; text-align:center; }
+.custom-night-sub{ margin-top: 6px; text-align:center; font-size: 12px; letter-spacing: 4px; color: rgba(0,255,65,0.75); font-family: monospace; }
+
+.custom-night-grid{ margin-top: 16px; display:flex; flex-direction: column; gap: 10px; }
+.custom-night-row{ display:grid; grid-template-columns: 120px 1fr 46px; gap: 10px; align-items:center; }
+.custom-night-name{ font-size: 12px; letter-spacing: 3px; color: rgba(255,255,255,0.85); }
+.custom-night-val{ text-align:right; font-size: 14px; letter-spacing: 2px; color: rgba(0,255,65,0.9); }
+.custom-night-slider{ width: 100%; }
+
+.custom-night-actions{ display:flex; justify-content: space-between; gap: 12px; margin-top: 16px; }
+
+.manual-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 245;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.82);
+  backdrop-filter: blur(1px);
+}
+
+.manual-card{
+  width: min(720px, 94vw);
+  max-height: min(78vh, 720px);
+  padding: 18px;
+  border: 2px solid rgba(255,224,102,0.18);
+  background: radial-gradient(circle at 50% 10%, rgba(255,224,102,0.10) 0%, rgba(0,0,0,0.92) 70%);
+  box-shadow: 0 0 60px rgba(255,224,102,0.08);
+  overflow: hidden;
+}
+
+.manual-title{ font-family:'Creepster',cursive; font-size: 44px; letter-spacing: 6px; text-align:center; }
+.manual-sub{ margin-top: 6px; text-align:center; font-size: 12px; letter-spacing: 4px; color: rgba(255,224,102,0.75); font-family: monospace; }
+
+.manual-body{
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.35);
+  max-height: calc(78vh - 170px);
+  overflow: auto;
+}
+
+.manual-section{ padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.manual-section:last-child{ border-bottom: none; }
+.manual-enemy{ font-size: 14px; letter-spacing: 3px; color: rgba(255,255,255,0.9); }
+.manual-text{ margin-top: 8px; font-size: 12px; line-height: 1.55; color: rgba(255,255,255,0.82); }
+.manual-locked{ opacity: 0.55; filter: blur(0.2px); }
+
+.manual-actions{ display:flex; justify-content: flex-end; gap: 12px; margin-top: 16px; }
+
 .screen { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
 .screen.active { display: flex; }
 
@@ -160,16 +231,27 @@ body {
 .title-night {
   font-family: 'Creepster', cursive;
   font-size: clamp(14px, 2.2vw, 22px);
-  color: var(--amber); margin-top: 14px; letter-spacing: 3px;
+  color: var(--amber); margin-top: 14px; letter-spacing: 4px;
 }
 
 .title-btn {
-  margin-top: 36px; padding: 13px 46px; background: transparent;
-  border: 2px solid var(--blood); color: var(--blood);
-  font-family: 'Creepster', cursive; font-size: 26px; letter-spacing: 4px;
-  cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+  margin-top: 18px;
+  padding: 12px 34px;
+  background: transparent;
+  border: 2px solid #00ff41;
+  color: #00ff41;
+  font-family: 'Creepster', cursive;
+  font-size: 22px;
+  letter-spacing: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-.title-btn:hover { background: var(--blood); color: #fff; box-shadow: 0 0 28px rgba(139,0,0,0.7); transform: scale(1.04); }
+.title-btn:hover { background: #00ff41; color: #000; }
+
+.title-actions{ display:flex; gap:12px; margin-top: 18px; flex-wrap: wrap; justify-content:center; }
+.title-actions .title-btn{ margin-top: 0; }
+.title-btn.secondary{ border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.85); }
+.title-btn.secondary:hover{ background: rgba(255,255,255,0.85); color: #000; }
 
 .title-warning {
   position: absolute; bottom: 18px;
@@ -249,7 +331,7 @@ body {
   position: relative;
   overflow: hidden;
   background: #060504;
-  background-image: url('fnaf office.jpg');
+  background-image: url('Images/Office.png');
   background-size: cover;
   background-position: center;
 }
@@ -357,6 +439,16 @@ body {
 .morgan-office.right { right: 78px; }
 .morgan-office.peek { opacity: 1; }
 
+#morgan-left, #morgan-right {
+  background: url('Images/Morgan 1.0.png') center/contain no-repeat;
+  opacity: 0.80;
+}
+
+#hodge-left, #hodge-right {
+  background: url('Images/Hodge 1.0.png') center/contain no-repeat;
+  opacity: 0.80;
+}
+
 .shadow-office {
   position: absolute;
   bottom: 0;
@@ -364,7 +456,7 @@ body {
   visibility: hidden;
   transition: opacity 0.18s, visibility 0s linear 0.18s;
   z-index: 5;
-  filter: brightness(0.30) contrast(2.4) saturate(1.6) hue-rotate(200deg);
+  filter: contrast(1.35) brightness(0.95) saturate(1.35);
 }
 .shadow-office.left { left: 84px; }
 .shadow-office.right { right: 84px; }
@@ -583,6 +675,8 @@ body {
 .cam-feed {
   flex: 1; position: relative; background: #000; margin: 0; border: none;
   overflow: hidden; border-radius: 0; min-height: 0;
+  filter: brightness(0.88) contrast(1.1);
+  opacity: 0.88;
 }
 
 .cam-hud{
@@ -655,7 +749,8 @@ body {
 }
 
 .cam-feed.cam-lit {
-  filter: brightness(1.65) contrast(1.15) saturate(1.1);
+  filter: brightness(1.50) contrast(1.15) saturate(1.1);
+  opacity: 0.90;
 }
 .cam-feed.cam-lit::before {
   content: "";
@@ -690,21 +785,34 @@ body {
 @keyframes staticflash { 0%{opacity:0.04} 50%{opacity:0.1} 100%{opacity:0.04} }
 
 .morgan-on-cam { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 4; background: rgba(0,0,0,0.35); }
-.morgan-cam-figure { width: 70px; height: 120px; opacity: 0.9; background: rgba(120,0,0,0.55); border: 2px solid rgba(255,60,60,0.35); box-shadow: 0 0 18px rgba(255,0,0,0.18); filter: contrast(1.2); animation: morganstalk 0.3s ease-in-out infinite alternate; }
+.morgan-cam-figure { width: 70px; height: 120px; opacity: 0.75; background: rgba(120,0,0,0.55) url('Images/Morgan 1.0.png') center/cover no-repeat; border: 2px solid rgba(255,60,60,0.35); box-shadow: 0 0 18px rgba(255,0,0,0.18); filter: contrast(1.2) brightness(0.85); animation: morganstalk 0.3s ease-in-out infinite alternate; }
 @keyframes morganstalk { from{transform:translateX(-2px)} to{transform:translateX(2px)} }
 
 .shadow-on-cam { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 4; background: rgba(0,0,0,0.32); }
 .shadow-cam-figure {
   width: 86px;
   height: 132px;
-  opacity: 0.95;
-  background: radial-gradient(circle at 50% 25%, rgba(40,110,255,0.22) 0%, rgba(10,25,60,0.88) 40%, rgba(0,0,0,0.98) 100%);
+  opacity: 0.80;
+  background: radial-gradient(circle at 50% 25%, rgba(40,110,255,0.22) 0%, rgba(10,25,60,0.88) 40%, rgba(0,0,0,0.98) 100%), url('Images/Twigg 1.0.png') center/cover no-repeat;
   border: 2px solid rgba(80,140,255,0.45);
   box-shadow: 0 0 30px rgba(60,120,255,0.25), 0 0 18px rgba(0,0,0,0.65);
-  filter: contrast(1.35) brightness(0.95) saturate(1.35);
+  filter: contrast(1.35) brightness(0.85) saturate(1.35);
   animation: shadowstalk 0.22s ease-in-out infinite alternate;
 }
 @keyframes shadowstalk { from{transform:translateX(-1px) scaleY(1.01)} to{transform:translateX(1px) scaleY(0.99)} }
+
+.hodge-on-cam { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 4; background: rgba(0,0,0,0.28); }
+.hodge-cam-figure{
+  width: 92px;
+  height: 138px;
+  opacity: 0.78;
+  background: radial-gradient(circle at 50% 22%, rgba(230,230,230,0.14) 0%, rgba(60,70,80,0.78) 45%, rgba(0,0,0,0.98) 100%), url('Images/Hodge 1.0.png') center/contain no-repeat;
+  border: 2px solid rgba(220,220,220,0.25);
+  box-shadow: 0 0 26px rgba(230,230,230,0.10), 0 0 18px rgba(0,0,0,0.7);
+  filter: contrast(1.25) brightness(0.85) saturate(0.8);
+  animation: hodgestalk 0.28s ease-in-out infinite alternate;
+}
+@keyframes hodgestalk { from{transform:translateY(-1px) scaleX(1.01)} to{transform:translateY(1px) scaleX(0.99)} }
 
 .cam-buttons { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; padding: 0 9px 8px; }
 .cam-btn {
@@ -739,31 +847,53 @@ body {
 .jumpscare-img {
   width: min(420px, 92vw);
   height: min(520px, 55vh);
-  background: radial-gradient(circle at 50% 35%, rgba(255,40,40,0.35) 0%, rgba(60,0,0,0.65) 35%, rgba(0,0,0,0.98) 75%);
+  background: radial-gradient(circle at 50% 35%, rgba(255,40,40,0.35) 0%, rgba(60,0,0,0.65) 35%, rgba(0,0,0,0.98) 75%), url('Images/Morgan 1.0.png') center/contain no-repeat;
   border: 3px solid rgba(255,40,40,0.25);
   box-shadow: 0 0 40px rgba(255,0,0,0.22);
-  filter: contrast(1.25) saturate(0.8) brightness(0.9);
+  filter: contrast(1.25) saturate(0.8) brightness(0.80);
+  opacity: 0.82;
+}
+
+.jumpscare-img.zoom-scare {
+  animation: jumpscareZoom 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes jumpscareZoom {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
 }
 
 .jumpscare-img.shadow {
-  background: radial-gradient(circle at 50% 35%, rgba(80,140,255,0.30) 0%, rgba(10,25,60,0.78) 35%, rgba(0,0,0,0.98) 75%);
+  background: radial-gradient(circle at 50% 35%, rgba(80,140,255,0.30) 0%, rgba(10,25,60,0.78) 35%, rgba(0,0,0,0.98) 75%), url('Images/Twigg 1.0.png') center/contain no-repeat;
   border: 3px solid rgba(80,140,255,0.26);
   box-shadow: 0 0 46px rgba(60,120,255,0.22);
-  filter: contrast(1.25) saturate(1.05) brightness(0.95);
+  filter: contrast(1.25) saturate(1.05) brightness(0.82);
+  opacity: 0.82;
 }
 
 .jumpscare-img.hamlet {
-  background: radial-gradient(circle at 50% 35%, rgba(80,255,140,0.28) 0%, rgba(0,60,20,0.80) 35%, rgba(0,0,0,0.98) 75%);
+  background: radial-gradient(circle at 50% 35%, rgba(80,255,140,0.28) 0%, rgba(0,60,20,0.80) 35%, rgba(0,0,0,0.98) 75%), url('Images/Hamlet 1.0.png') center/cover no-repeat;
   border: 3px solid rgba(80,255,140,0.22);
   box-shadow: 0 0 46px rgba(0,255,100,0.18);
-  filter: contrast(1.2) saturate(1.15) brightness(0.92);
+  filter: contrast(1.2) saturate(1.15) brightness(0.82);
+  opacity: 0.82;
 }
 
 .jumpscare-img.twigg{
-  background: radial-gradient(circle at 50% 35%, rgba(220,200,80,0.26) 0%, rgba(70,55,10,0.82) 35%, rgba(0,0,0,0.98) 75%);
+  background: radial-gradient(circle at 50% 35%, rgba(220,200,80,0.26) 0%, rgba(70,55,10,0.82) 35%, rgba(0,0,0,0.98) 75%), url('Images/Twigg 1.0.png') center/contain no-repeat;
   border: 3px solid rgba(220,200,80,0.22);
   box-shadow: 0 0 46px rgba(220,200,80,0.14);
-  filter: contrast(1.2) saturate(0.95) brightness(0.92);
+  filter: contrast(1.2) saturate(0.95) brightness(0.82);
+  opacity: 0.82;
+}
+
+.jumpscare-img.hodge{
+  background: radial-gradient(circle at 50% 35%, rgba(230,230,230,0.18) 0%, rgba(70,80,90,0.78) 35%, rgba(0,0,0,0.98) 75%), url('Images/Hodge 1.0.png') center/contain no-repeat;
+  border: 3px solid rgba(230,230,230,0.16);
+  box-shadow: 0 0 46px rgba(230,230,230,0.10);
+  filter: contrast(1.2) saturate(0.75) brightness(0.82);
+  opacity: 0.82;
 }
 
 .scare-text { font-family: 'Creepster', cursive; font-size: clamp(38px,7vw,90px); color: #fff; letter-spacing: 6px; text-shadow: 0 0 30px rgba(255,0,0,0.9); margin-top: 20px; animation: scaretext 0.4s 0.3s both; }

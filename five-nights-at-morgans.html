@@ -17,20 +17,79 @@
     <div class="title-svg-wrap">
       <div class="power-cone"></div>
       <!-- Kid with power light -->
-      <img class="title-character" src="school hired this guy btw.jpg" alt="Title character" />
+      <img class="title-character" src="Images/Morgan 1.0.png" alt="Title character" style="opacity: 0.1;" />
     </div>
 
     <div class="title-main">Five Nights<br>at Morgan's</div>
     <div class="title-tagline">you weren't supposed to be here.</div>
     <div class="title-lore">
       You fell asleep on the bus.<br>
-      Now you're locked inside Morgan's office building — alone.<br>
+      Now you're locked inside Morgan's office building - alone.<br>
       Something is walking the halls. It knows you're here.
     </div>
-    <div class="title-night" id="night-indicator">— Night 1 —</div>
-    <button class="title-btn" onclick="startGame()">STAY TILL MORNING</button>
+    <div class="title-night" id="night-indicator">-- Night 1 --</div>
+    <div class="title-actions">
+      <button class="title-btn" onclick="startGame()">STAY TILL MORNING</button>
+      <button class="title-btn secondary" onclick="openManual()">MANUAL</button>
+      <button class="title-btn secondary" onclick="openCustomNight()">CUSTOM NIGHT</button>
+    </div>
   </div>
-  <div class="title-warning">⚠ YOU ARE NOT SUPPOSED TO BE HERE ⚠</div>
+  <div class="title-warning">WARNING: YOU ARE NOT SUPPOSED TO BE HERE</div>
+</div>
+
+<div class="manual-overlay" id="manual-overlay" style="display:none" role="dialog" aria-modal="true">
+  <div class="manual-card">
+    <div class="manual-title">MANUAL</div>
+    <div class="manual-sub">UNLOCKED AFTER YOU DIE</div>
+    <div class="manual-body" id="manual-body"></div>
+    <div class="manual-actions">
+      <button class="title-btn secondary" onclick="closeManual()">BACK</button>
+    </div>
+  </div>
+</div>
+
+<div class="custom-night-overlay" id="custom-night-overlay" style="display:none" role="dialog" aria-modal="true">
+  <div class="custom-night-card">
+    <div class="custom-night-title">CUSTOM NIGHT</div>
+    <div class="custom-night-sub">SET AI (1–20)</div>
+
+    <div class="custom-night-grid">
+      <div class="custom-night-row">
+        <div class="custom-night-name">MORGAN</div>
+        <input class="custom-night-slider" id="ai-morgan" type="range" min="1" max="20" value="10" oninput="syncCustomNightAI('morgan')" />
+        <div class="custom-night-val" id="ai-morgan-val">10</div>
+      </div>
+
+      <div class="custom-night-row">
+        <div class="custom-night-name">SHADOW</div>
+        <input class="custom-night-slider" id="ai-shadow" type="range" min="1" max="20" value="10" oninput="syncCustomNightAI('shadow')" />
+        <div class="custom-night-val" id="ai-shadow-val">10</div>
+      </div>
+
+      <div class="custom-night-row">
+        <div class="custom-night-name">MR HAMLET</div>
+        <input class="custom-night-slider" id="ai-hamlet" type="range" min="1" max="20" value="10" oninput="syncCustomNightAI('hamlet')" />
+        <div class="custom-night-val" id="ai-hamlet-val">10</div>
+      </div>
+
+      <div class="custom-night-row">
+        <div class="custom-night-name">MR TWIGG</div>
+        <input class="custom-night-slider" id="ai-twigg" type="range" min="1" max="20" value="10" oninput="syncCustomNightAI('twigg')" />
+        <div class="custom-night-val" id="ai-twigg-val">10</div>
+      </div>
+
+      <div class="custom-night-row">
+        <div class="custom-night-name">DR HODGE</div>
+        <input class="custom-night-slider" id="ai-hodge" type="range" min="1" max="20" value="10" oninput="syncCustomNightAI('hodge')" />
+        <div class="custom-night-val" id="ai-hodge-val">10</div>
+      </div>
+    </div>
+
+    <div class="custom-night-actions">
+      <button class="title-btn secondary" onclick="closeCustomNight()">BACK</button>
+      <button class="title-btn" onclick="startCustomNight()">START</button>
+    </div>
+  </div>
 </div>
 
 <!-- ======== GAME ======== -->
@@ -188,7 +247,7 @@
         <rect x="329" y="296" width="142" height="76" rx="2" fill="#001800" opacity="0.9"/>
         <text x="400" y="326" font-size="8" fill="#00cc33" text-anchor="middle" font-family="monospace" opacity="0.7">SECURITY CAM</text>
         <text x="400" y="340" font-size="6" fill="#005500" text-anchor="middle" font-family="monospace" opacity="0.5">--- LIVE ---</text>
-        <text x="400" y="356" font-size="6" fill="#003300" text-anchor="middle" font-family="monospace" opacity="0.4">USE PANEL →</text>
+        <text x="400" y="356" font-size="6" fill="#003300" text-anchor="middle" font-family="monospace" opacity="0.4">USE PANEL -></text>
         <rect x="388" y="378" width="24" height="8" fill="#0f0f0f"/>
         <rect x="374" y="384" width="52" height="4" rx="2" fill="#0f0f0f"/>
         <!-- Kid stuff on desk: backpack, snack wrappers -->
@@ -209,7 +268,7 @@
         <text x="155" y="70" font-size="7" fill="#1e1c18" text-anchor="middle" font-family="monospace">BUILDING</text>
         <text x="155" y="82" font-size="7" fill="#1e1c18" text-anchor="middle" font-family="monospace">REGULATIONS</text>
         <line x1="118" y1="92" x2="192" y2="92" stroke="#181614" stroke-width="1"/>
-        <!-- Missing child poster — eerie -->
+        <!-- Missing child poster - eerie -->
         <rect x="600" y="35" width="90" height="115" rx="2" fill="#0c0a08" stroke="#181614" stroke-width="1"/>
         <text x="645" y="62" font-size="7" fill="#2a1a14" text-anchor="middle" font-family="monospace">MISSING</text>
         <ellipse cx="645" cy="92" rx="16" ry="18" fill="#1a1208" stroke="#2a1a14" stroke-width="1"/>
@@ -283,12 +342,41 @@
         <rect x="68" y="78" width="28" height="10" rx="5" fill="#050505" transform="rotate(-18 96 78)"/>
       </svg>
 
+      <!-- Dr Hodge figures at doors -->
+      <svg class="hodge-office left" id="hodge-left" width="100" height="190" viewBox="0 0 100 190" style="display:none">
+        <ellipse cx="50" cy="185" rx="22" ry="5" fill="#000" opacity="0.6"/>
+        <rect x="30" y="70" width="40" height="90" rx="8" fill="#1a0a0a"/>
+        <rect x="38" y="50" width="24" height="24" rx="6" fill="#1a0a0a"/>
+        <ellipse cx="50" cy="45" rx="18" ry="20" fill="#2a1515"/>
+        <ellipse cx="42" cy="44" rx="6" ry="4" fill="#ffffff" opacity="0.9"/>
+        <ellipse cx="58" cy="44" rx="6" ry="4" fill="#ffffff" opacity="0.9"/>
+        <ellipse cx="42" cy="44" rx="3" ry="2" fill="#000"/>
+        <ellipse cx="58" cy="44" rx="3" ry="2" fill="#000"/>
+        <path d="M40 58 Q50 65 60 58" stroke="#8b0000" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <rect x="35" y="155" width="12" height="30" rx="4" fill="#1a0a0a"/>
+        <rect x="53" y="155" width="12" height="30" rx="4" fill="#1a0a0a"/>
+      </svg>
+
+      <svg class="hodge-office right" id="hodge-right" width="100" height="190" viewBox="0 0 100 190" style="display:none">
+        <ellipse cx="50" cy="185" rx="22" ry="5" fill="#000" opacity="0.6"/>
+        <rect x="30" y="70" width="40" height="90" rx="8" fill="#1a0a0a"/>
+        <rect x="38" y="50" width="24" height="24" rx="6" fill="#1a0a0a"/>
+        <ellipse cx="50" cy="45" rx="18" ry="20" fill="#2a1515"/>
+        <ellipse cx="42" cy="44" rx="6" ry="4" fill="#ffffff" opacity="0.9"/>
+        <ellipse cx="58" cy="44" rx="6" ry="4" fill="#ffffff" opacity="0.9"/>
+        <ellipse cx="42" cy="44" rx="3" ry="2" fill="#000"/>
+        <ellipse cx="58" cy="44" rx="3" ry="2" fill="#000"/>
+        <path d="M40 58 Q50 65 60 58" stroke="#8b0000" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <rect x="35" y="155" width="12" height="30" rx="4" fill="#1a0a0a"/>
+        <rect x="53" y="155" width="12" height="30" rx="4" fill="#1a0a0a"/>
+      </svg>
+
       <div class="hamlet-hallucination" id="hamlet-hallucination" aria-label="Mr Hamlet" role="img" style="opacity:0"></div>
 
       <div class="fear-overlay" id="fear-overlay"></div>
       <div class="scanlines"></div>
       <div class="vignette"></div>
-      <div class="alert-bar" id="alert-bar">⚠ MOTION DETECTED ⚠</div>
+      <div class="alert-bar" id="alert-bar">MOTION DETECTED</div>
       <button class="door-btn" id="btn-left" onclick="toggleDoor('left')">LEFT<br>DOOR</button>
       <button class="door-btn" id="btn-right" onclick="toggleDoor('right')">RIGHT<br>DOOR</button>
       <button class="light-btn" id="btn-light-left" onclick="toggleLight('left')">LEFT<br>LIGHT</button>
@@ -308,7 +396,7 @@
       </div>
 
       <div class="powerout-overlay" id="powerout-overlay">
-        <div class="powerout-text">⚠ POWER OUT ⚠</div>
+        <div class="powerout-text">POWER OUT</div>
         <div style="font-size:10px;color:#111;letter-spacing:3px;margin-top:6px">he knows where you are now...</div>
       </div>
     </div>
@@ -321,7 +409,7 @@
       <div class="cam-panel">
         <div class="cam-panel-title">// security cams //</div>
         <div class="cam-feed" id="cam-feed">
-          <div class="cam-feed-label" id="cam-feed-label">CAM 1A — HALLWAY A</div>
+          <div class="cam-feed-label" id="cam-feed-label">CAM 1A - HALLWAY A</div>
           <div class="cam-hud" aria-label="Camera HUD">
             <div class="cam-hud-row">
               <div class="cam-hud-item" id="cam-clock-display">12:00 AM</div>
@@ -354,6 +442,9 @@
           </div>
           <div class="shadow-on-cam" id="shadow-on-cam" style="display:none">
             <div class="shadow-cam-figure" aria-label="Shadow" role="img"></div>
+          </div>
+          <div class="hodge-on-cam" id="hodge-on-cam" style="display:none">
+            <div class="hodge-cam-figure" aria-label="Dr Hodge" role="img"></div>
           </div>
           <div class="cam-overlay"></div>
           <div class="cam-static" id="cam-static"></div>
@@ -409,13 +500,14 @@
     You heard the doors unlock.<br>
     You ran, and you never looked back.
   </div>
-  <div class="result-stat" id="win-stat">NIGHT 1 COMPLETE · POWER: --% LEFT</div>
-  <button class="result-btn" onclick="nextNight()">NEXT NIGHT →</button>
+  <div class="result-stat" id="win-stat">NIGHT 1 COMPLETE - POWER: --% LEFT</div>
+  <button class="result-btn" onclick="nextNight()">NEXT NIGHT -></button>
 </div>
 
 <script src="five-nights-at-morgans.core.js"></script>
 <script src="five-nights-at-morgans.morgan.js"></script>
 <script src="five-nights-at-morgans.shadow.js"></script>
+<script src="five-nights-at-morgans.hodge.js"></script>
 <script src="five-nights-at-morgans.ui.js"></script>
 <script src="five-nights-at-morgans.game.js"></script>
 </body>

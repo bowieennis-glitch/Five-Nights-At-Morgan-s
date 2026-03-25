@@ -531,21 +531,21 @@ const AUDIO={
     const o=ctx.createOscillator();
     o.type='sawtooth';
     o.frequency.setValueAtTime(320,t);
-    o.frequency.exponentialRampToValueAtTime(960,t+0.18);
-    o.frequency.exponentialRampToValueAtTime(180,t+0.65);
+    o.frequency.exponentialRampToValueAtTime(960,t+0.12);
+    o.frequency.exponentialRampToValueAtTime(180,t+0.40);
     const f=ctx.createBiquadFilter();
     f.type='bandpass';
     f.frequency.setValueAtTime(1100,t);
     f.Q.value=0.9;
     const g=ctx.createGain();
     g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(0.75,t+0.03);
-    g.gain.exponentialRampToValueAtTime(0.08,t+0.7);
+    g.gain.exponentialRampToValueAtTime(1.2,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.12,t+0.45);
     o.connect(f);
     f.connect(g);
     g.connect(this.master);
     o.start(t);
-    o.stop(t+0.78);
+    o.stop(t+0.50);
     this.noiseBurst(0.55,0.25,600);
   }
 };
@@ -703,6 +703,10 @@ function closeCamPanel(){
   document.getElementById('cam-panel-overlay').style.display='none';
   AUDIO.sfxCamClose();
   state.camLightOn=false;
+  // Reset enemy visibility flags when closing camera panel
+  state.morganSeenWithLight=false;
+  state.shadowSeenWithLight=false;
+  state.hodgeSeenWithLight=false;
   updateCamLightVisual();
   hideMorganOnCam();
   hideShadowOnCam();
@@ -803,10 +807,15 @@ function resetState(){
   updateShadowOfficeVisual();
   document.getElementById('morgan-left').className='morgan-office left';
   document.getElementById('morgan-right').className='morgan-office right';
+  const hodgeLeft=document.getElementById('hodge-left');
+  const hodgeRight=document.getElementById('hodge-right');
+  if(hodgeLeft) hodgeLeft.style.display='none';
+  if(hodgeRight) hodgeRight.style.display='none';
   document.getElementById('fear-overlay').className='fear-overlay';
   document.getElementById('powerout-overlay').classList.remove('show');
   hideMorganOnCam(); clearAlert();
   hideShadowOnCam();
+  if(window.HodgeAI && typeof window.HodgeAI.reset==='function') window.HodgeAI.reset();
   CAMS.forEach(c=>{const b=document.getElementById(`cambtn-${c}`);if(b)b.className='cam-btn'+(c==='1A'?' active':'');});
   updateCamScene();
   updateCamDanger();
@@ -826,6 +835,7 @@ function tick(){
   updateClock();
   handleShadowAI();
   handleMorganCameraBehavior();
+  if(window.HodgeAI && typeof window.HodgeAI.update==='function') window.HodgeAI.update();
   if(state.timeElapsed/NIGHT_DURATION>=1&&!state.gameOver){winNight();return;}
   if(state.power<=0&&!state.gameOver){powerOut();return;}
 }
@@ -927,6 +937,9 @@ function checkShadowOnCurrentCam(){
 }
 
 function showShadowOnCam(){
+  // Show if: light is currently on (first reveal) OR was already seen with light on (persistent)
+  if(!state.camLightOn && !state.shadowSeenWithLight) return;
+  if(state.camLightOn) state.shadowSeenWithLight = true;
   const el=document.getElementById('shadow-on-cam');
   if(el) el.style.display='flex';
   document.getElementById('cam-static').className='cam-static on';
@@ -990,6 +1003,7 @@ function checkMorganOnCurrentCam(){
 }
 
 function showMorganOnCam(){
+  if(!state.camLightOn) return;
   document.getElementById('morgan-on-cam').style.display='flex';
   document.getElementById('cam-static').className='cam-static on';
 }
@@ -1027,11 +1041,17 @@ function toggleDoor(side){
     state.doorLeft=!state.doorLeft;
     setDoorVisual('left',state.doorLeft);
     if(state.doorLeft && state.shadowAtDoor==='left') repelShadowFromDoor('left',true);
+    if(state.doorLeft && state.hodgeAtDoor==='left'){
+      showAlert('⚠ DOOR SHUT — DR HODGE BACKED OFF ⚠');
+    }
   }
   else{
     state.doorRight=!state.doorRight;
     setDoorVisual('right',state.doorRight);
     if(state.doorRight && state.shadowAtDoor==='right') repelShadowFromDoor('right',true);
+    if(state.doorRight && state.hodgeAtDoor==='right'){
+      showAlert('⚠ DOOR SHUT — DR HODGE BACKED OFF ⚠');
+    }
   }
   updateShadowOfficeVisual();
 }
@@ -1046,20 +1066,27 @@ function setDoorVisual(side,closed){
 function switchCam(cam){
   if(cam==='6B') return;
   state.currentCam=cam;
+  // Reset enemy visibility flags when switching cameras
+  state.morganSeenWithLight=false;
+  state.shadowSeenWithLight=false;
+  state.hodgeSeenWithLight=false;
   CAMS.forEach(c=>{const b=document.getElementById(`cambtn-${c}`);if(b)b.classList.toggle('active',c===cam);});
   document.getElementById('cam-static').className='cam-static on';
   setTimeout(()=>{
     const m=document.getElementById('morgan-on-cam');
     const s=document.getElementById('shadow-on-cam');
+    const h=document.getElementById('hodge-on-cam');
     const mOn=!!m && m.style.display!=='none' && m.style.display!=='';
     const sOn=!!s && s.style.display!=='none' && s.style.display!=='';
-    if(!mOn && !sOn) document.getElementById('cam-static').className='cam-static';
+    const hOn=!!h && h.style.display!=='none' && h.style.display!=='';
+    if(!mOn && !sOn && !hOn) document.getElementById('cam-static').className='cam-static';
   },180);
   document.getElementById('cam-feed-label').textContent=`CAM ${cam} — ${CAM_LABELS[cam]||cam}`;
   updateCamLightVisual();
   updateCamScene();
   checkMorganOnCurrentCam();
   checkShadowOnCurrentCam();
+  if(window.HodgeAI && typeof window.HodgeAI.updateCameraOverlay==='function') window.HodgeAI.updateCameraOverlay();
 }
 
 function showAlert(msg){
@@ -1087,8 +1114,9 @@ function triggerJumpscare(killer){
 
   const img=document.querySelector('#jumpscare-screen .jumpscare-img');
   if(img){
-    img.classList.remove('shadow');
+    img.classList.remove('shadow', 'hamlet');
     if(state.lastKiller==='shadow') img.classList.add('shadow');
+    if(state.lastKiller==='power') img.classList.add('hamlet');
   }
 
   const t=document.getElementById('scare-text');

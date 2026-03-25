@@ -1,8 +1,14 @@
 function initCamStareTimers(){
+  const ai=(typeof getAILevel==='function')?getAILevel('morgan'):10;
+  const d=ai-10;
   state.morganCamObservedSeconds=0;
-  state.morganCamObserveTargetSeconds=randInt(3,5);
+  const obsMin=Math.max(2,Math.round(3 + (d*0.12)));
+  const obsMax=Math.max(obsMin+1,Math.round(5 + (d*0.12)));
+  state.morganCamObserveTargetSeconds=randInt(obsMin,obsMax);
   state.morganCamPresenceSeconds=0;
-  state.morganCamScareLimitSeconds=randInt(30,50);
+  const limMin=Math.max(12,Math.round(30 - (d*1.0)));
+  const limMax=Math.max(limMin+5,Math.round(50 - (d*1.2)));
+  state.morganCamScareLimitSeconds=randInt(limMin,limMax);
   state.morganCamReappearSeconds=0;
   state.morganCamNextLoc=null;
   updateCamButtonDanger();
@@ -48,13 +54,17 @@ function updateCamButtonDanger(){
 }
 
 function chaseMorganOffCam(){
+  const ai=(typeof getAILevel==='function')?getAILevel('morgan'):10;
+  const d=ai-10;
   const next=pickRandomMorganCam(state.morganCamLoc || state.currentCam);
   state.morganCamNextLoc=next;
   state.morganCamLoc=null;
   state.morganLoc='offcam';
   state.morganCamObservedSeconds=0;
   state.morganCamPresenceSeconds=0;
-  state.morganCamReappearSeconds=randInt(10,15);
+  const rMin=Math.max(5,Math.round(10 - (d*0.3)));
+  const rMax=Math.max(rMin+2,Math.round(15 - (d*0.3)));
+  state.morganCamReappearSeconds=randInt(rMin,rMax);
   updateCamDanger();
   updateCamButtonDanger();
   checkMorganOnCurrentCam();
@@ -70,9 +80,15 @@ function handleMorganCameraBehavior(){
       state.morganCamNextLoc=null;
       state.morganLoc=state.morganCamLoc;
       state.morganCamObservedSeconds=0;
-      state.morganCamObserveTargetSeconds=randInt(3,5);
+      const ai=(typeof getAILevel==='function')?getAILevel('morgan'):10;
+      const d=ai-10;
+      const obsMin=Math.max(2,Math.round(3 + (d*0.12)));
+      const obsMax=Math.max(obsMin+1,Math.round(5 + (d*0.12)));
+      state.morganCamObserveTargetSeconds=randInt(obsMin,obsMax);
       state.morganCamPresenceSeconds=0;
-      state.morganCamScareLimitSeconds=randInt(30,50);
+      const limMin=Math.max(12,Math.round(30 - (d*1.0)));
+      const limMax=Math.max(limMin+5,Math.round(50 - (d*1.2)));
+      state.morganCamScareLimitSeconds=randInt(limMin,limMax);
       updateCamDanger();
       updateCamButtonDanger();
       checkMorganOnCurrentCam();
@@ -83,9 +99,15 @@ function handleMorganCameraBehavior(){
   if(!state.morganCamLoc && CAMS.includes(state.morganLoc)){
     state.morganCamLoc=state.morganLoc;
     state.morganCamObservedSeconds=0;
-    state.morganCamObserveTargetSeconds=randInt(3,5);
+    const ai=(typeof getAILevel==='function')?getAILevel('morgan'):10;
+    const d=ai-10;
+    const obsMin=Math.max(2,Math.round(3 + (d*0.12)));
+    const obsMax=Math.max(obsMin+1,Math.round(5 + (d*0.12)));
+    state.morganCamObserveTargetSeconds=randInt(obsMin,obsMax);
     state.morganCamPresenceSeconds=0;
-    state.morganCamScareLimitSeconds=randInt(30,50);
+    const limMin=Math.max(12,Math.round(30 - (d*1.0)));
+    const limMax=Math.max(limMin+5,Math.round(50 - (d*1.2)));
+    state.morganCamScareLimitSeconds=randInt(limMin,limMax);
   }
 
   if(!state.morganCamLoc) return;
@@ -167,6 +189,11 @@ function checkMorganOnCurrentCam(){
 }
 
 function showMorganOnCam(){
+  // Only show if camera light is ON
+  if(!state.camLightOn) {
+    $id('morgan-on-cam').style.display='none';
+    return;
+  }
   $id('morgan-on-cam').style.display='flex';
   $id('cam-static').className='cam-static on';
 }
