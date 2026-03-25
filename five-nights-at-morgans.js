@@ -703,6 +703,10 @@ function closeCamPanel(){
   document.getElementById('cam-panel-overlay').style.display='none';
   AUDIO.sfxCamClose();
   state.camLightOn=false;
+  // Reset enemy visibility flags when closing camera panel
+  state.morganSeenWithLight=false;
+  state.shadowSeenWithLight=false;
+  state.hodgeSeenWithLight=false;
   updateCamLightVisual();
   hideMorganOnCam();
   hideShadowOnCam();
@@ -933,7 +937,9 @@ function checkShadowOnCurrentCam(){
 }
 
 function showShadowOnCam(){
-  if(!state.camLightOn) return;
+  // Show if: light is currently on (first reveal) OR was already seen with light on (persistent)
+  if(!state.camLightOn && !state.shadowSeenWithLight) return;
+  if(state.camLightOn) state.shadowSeenWithLight = true;
   const el=document.getElementById('shadow-on-cam');
   if(el) el.style.display='flex';
   document.getElementById('cam-static').className='cam-static on';
@@ -1060,6 +1066,10 @@ function setDoorVisual(side,closed){
 function switchCam(cam){
   if(cam==='6B') return;
   state.currentCam=cam;
+  // Reset enemy visibility flags when switching cameras
+  state.morganSeenWithLight=false;
+  state.shadowSeenWithLight=false;
+  state.hodgeSeenWithLight=false;
   CAMS.forEach(c=>{const b=document.getElementById(`cambtn-${c}`);if(b)b.classList.toggle('active',c===cam);});
   document.getElementById('cam-static').className='cam-static on';
   setTimeout(()=>{

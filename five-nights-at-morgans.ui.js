@@ -32,13 +32,14 @@ function openCamPanel(){
     updateUsageDisplay(getRawDrain(),getNightMultiplier());
   }
   checkMorganOnCurrentCam();
-  checkShadowOnCurrentCam();
-}
-
 function closeCamPanel(){
   $id('cam-panel-overlay').style.display='none';
   AUDIO.sfxCamClose();
   state.camLightOn=false;
+  // Reset enemy visibility flags when closing camera panel
+  state.morganSeenWithLight=false;
+  state.shadowSeenWithLight=false;
+  state.hodgeSeenWithLight=false;
   updateCamLightVisual();
   state.hamletCamSessionSeconds=0;
   if(typeof updateUsageDisplay==='function' && typeof getRawDrain==='function' && typeof getNightMultiplier==='function'){
@@ -47,8 +48,6 @@ function closeCamPanel(){
   hideMorganOnCam();
   hideShadowOnCam();
 }
-
-function updateCamLightVisual(){
   const feed=$id('cam-feed');
   if(feed) feed.classList.toggle('cam-lit',!!state.camLightOn);
   const btn=$id('btn-cam-light');

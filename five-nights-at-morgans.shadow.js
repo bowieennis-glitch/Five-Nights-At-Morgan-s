@@ -100,7 +100,9 @@ function checkShadowOnCurrentCam(){
 }
 
 function showShadowOnCam(){
-  if(!state.camLightOn) return;
+  // Show if: light is currently on (first reveal) OR was already seen with light on (persistent)
+  if(!state.camLightOn && !state.shadowSeenWithLight) return;
+  if(state.camLightOn) state.shadowSeenWithLight = true;
   const el=$id('shadow-on-cam');
   if(el) el.style.display='flex';
   $id('cam-static').className='cam-static on';

@@ -421,6 +421,10 @@ function setDoorVisual(side,closed){
 function switchCam(cam){
   if(cam==='6B') return;
   state.currentCam=cam;
+  // Reset enemy visibility flags when switching cameras
+  state.morganSeenWithLight=false;
+  state.shadowSeenWithLight=false;
+  state.hodgeSeenWithLight=false;
   CAMS.forEach(c=>{const b=document.getElementById(`cambtn-${c}`);if(b)b.classList.toggle('active',c===cam);});
   $id('cam-static').className='cam-static on';
   setTimeout(()=>{
@@ -459,8 +463,12 @@ function triggerJumpscare(killer){
   AUDIO.scream();
   AUDIO.stopAmbience();
   
-  // Play scream.mp3
-  const screamAudio = new Audio('scream.mp3');
+  // Stop any existing scream and play new one
+  if(screamAudio) {
+    screamAudio.pause();
+    screamAudio.currentTime = 0;
+  }
+  screamAudio = new Audio('scream.mp3');
   screamAudio.volume = 0.8;
   screamAudio.play().catch(err => console.log('Scream audio play error:', err));
   
@@ -583,6 +591,12 @@ function nextNight(){
 }
 function retryNight(){
   try {
+    // Stop scream audio
+    if(screamAudio){
+      screamAudio.pause();
+      screamAudio.currentTime = 0;
+      screamAudio = null;
+    }
     console.log('Retrying night...');
     updateNightIndicator();
     startGame();
@@ -592,6 +606,12 @@ function retryNight(){
 }
 function goTitle(){
   try {
+    // Stop scream audio
+    if(screamAudio){
+      screamAudio.pause();
+      screamAudio.currentTime = 0;
+      screamAudio = null;
+    }
     clearInterval(gameInterval);
     clearInterval(camTsInterval);
     updateNightIndicator();
